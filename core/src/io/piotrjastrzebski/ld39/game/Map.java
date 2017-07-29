@@ -12,15 +12,15 @@ public class Map {
     public final int width;
     public final int height;
     public Map () {
-        Pixmap raw = new Pixmap(Gdx.files.internal("map.png"));
-        width = raw.getWidth();
-        height = raw.getHeight();
+        Pixmap terrain = new Pixmap(Gdx.files.internal("map.png"));
+        Pixmap coal = new Pixmap(Gdx.files.internal("coal.png"));
+        width = terrain.getWidth();
+        height = terrain.getHeight();
         tiles = new Tile[width * height];
         Color out = new Color();
         for (int x = 0; x < width; x++) {
             for (int y = 0; y < height; y++) {
-                int pixel = raw.getPixel(x, height - y - 1);
-                Color.rgba8888ToColor(out, pixel);
+                Color.rgba8888ToColor(out, terrain.getPixel(x, height - y - 1));
                 // simple greyscale
                 float elevation = (out.r + out.g + out.b)/3;
                 Tile tile = new Tile(x, y, index(x, y), elevation);
@@ -39,6 +39,8 @@ public class Map {
                 } else {
                     tile.color.set(Color.FOREST);
                 }
+                Color.rgba8888ToColor(out, coal.getPixel(x, height - y - 1));
+                tile.coal = out.a;
             }
         }
     }
@@ -62,18 +64,26 @@ public class Map {
         for (Tile tile : tiles) {
             shapes.setColor(tile.color);
             shapes.rect(tile.x, tile.y, 1, 1);
+            if (coalOverlay) {
+                shapes.setColor(.15f, .1f, .1f, 1);
+                shapes.circle(tile.x + .5f, tile.y + .5f, tile.coal * .4f, 6);
+            }
         }
     }
 
+    private boolean coalOverlay;
     private Vector2 sp = new Vector2();
     public void update (Vector2 tp, float delta) {
-
+        if (Gdx.input.isKeyJustPressed(Input.Keys.C)) {
+            coalOverlay = !coalOverlay;
+        }
     }
 
     public static class Tile {
         public final int x, y, index;
         public final float elevation;
         public Color color = new Color();
+        public float coal;
 
         public Tile (int x, int y, int index, float elevation) {
             this.x = x;
