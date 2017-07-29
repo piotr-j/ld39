@@ -1,9 +1,9 @@
 package io.piotrjastrzebski.ld39.game.building;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
+import io.piotrjastrzebski.ld39.game.Map;
 import io.piotrjastrzebski.ld39.game.utils.IntRect;
 
 public abstract class Building<T extends Building> {
@@ -15,6 +15,7 @@ public abstract class Building<T extends Building> {
     public IntRect bounds = new IntRect();
     public Color tint = new Color(1, 1, 1, 1);
     public int direction = EAST;
+    protected Map map;
 
     public Building (String name, int x, int y, int width, int height) {
         this.name = name;
@@ -66,6 +67,7 @@ public abstract class Building<T extends Building> {
 
     public T duplicate (T instance) {
         instance.direction = direction;
+        instance.map = map;
         return instance;
     }
 }

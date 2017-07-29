@@ -31,6 +31,9 @@ public class Buildings implements InputProcessor {
         templates.add(new ResearchLab(0, 0));
         templates.add(new SolarPowerPlant(0, 0));
         templates.add(new UtilityPole(0, 0));
+        for (Building building : templates) {
+            building.map = map;
+        }
         detector = new GestureDetector(new GestureDetector.GestureAdapter() {
             @Override public boolean tap (float x, float y, int count, int button) {
                 if (build != null) {
@@ -70,12 +73,7 @@ public class Buildings implements InputProcessor {
     private boolean finishBuilding () {
         if (build == null) return false;
         build.tint.a = 1;
-        // dont overlap buildings
-        for (Building building : buildings) {
-            if (building.bounds.overlaps(build.bounds)) {
-                return false;
-            }
-        }
+        if (!checkLocation(build)) return false;
         buildings.add(build.duplicate());
         return false;
     }
@@ -120,11 +118,8 @@ public class Buildings implements InputProcessor {
         }
         if (build != null) {
             shapes.setColor(0, 1, 0, .7f);
-            for (Building building : buildings) {
-                if (building.bounds.overlaps(build.bounds)) {
-                    shapes.setColor(1, 0, 0, .7f);
-                    break;
-                }
+            if (!checkLocation(build)) {
+                shapes.setColor(1, 0, 0, .7f);
             }
             shapes.rect(build.bounds.x -.1f, build.bounds.y -.1f, build.bounds.width + .2f, build.bounds.height + .2f);
             build.drawDebug(shapes);
@@ -141,6 +136,32 @@ public class Buildings implements InputProcessor {
             }
             shapes.circle(dx, dy, .3f, 12);
         }
+    }
+
+    private boolean checkLocation (Building build) {
+        if (!map.bounds.contains(build.bounds)) {
+            Gdx.app.log("invalid", "out of bounds");
+            return false;
+        }
+
+        for (int x = 0; x < build.bounds.width; x++) {
+            for (int y = 0; y < build.bounds.height; y++) {
+                Map.Tile tile = map.getTile(build.bounds.x + x, build.bounds.y + y);
+                if (tile == null) {
+                    return false;
+                }
+                if (tile.type != Map.TILE_TYPE_GROUND) {
+                    return false;
+                }
+            }
+        }
+
+        for (Building building : buildings) {
+            if (building.bounds.overlaps(build.bounds)) {
+                return false;
+            }
+        }
+        return true;
     }
 
     private Vector2 tmp = new Vector2();
