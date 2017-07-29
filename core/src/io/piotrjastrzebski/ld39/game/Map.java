@@ -25,7 +25,7 @@ public class Map {
         for (int x = 0; x < width; x++) {
             for (int y = 0; y < height; y++) {
                 Color.rgba8888ToColor(out, terrain.getPixel(x, height - y - 1));
-                // simple greyscale
+                // simple grey scale
                 float elevation = (out.r + out.g + out.b)/3;
                 Tile tile = new Tile(x, y, index(x, y), elevation);
                 tiles[tile.index] = tile;

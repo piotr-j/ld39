@@ -16,6 +16,8 @@ public abstract class Building<T extends Building> {
     public Color tint = new Color(1, 1, 1, 1);
     public int direction = EAST;
     protected Map map;
+    protected Buildings buildings;
+    protected static Vector2 tmp = new Vector2();
 
     public Building (String name, int x, int y, int width, int height) {
         this.name = name;
@@ -26,7 +28,14 @@ public abstract class Building<T extends Building> {
 
     }
 
-    private static Vector2 tmp = new Vector2();
+    public float cx () {
+        return bounds.x + bounds.width/2f;
+    }
+
+    public float cy () {
+        return bounds.y + bounds.height/2f;
+    }
+
     public void drawDebug(ShapeRenderer shapes) {
         shapes.setColor(Color.WHITE);
         shapes.rect(bounds.x, bounds.y, bounds.width, bounds.height);
@@ -68,6 +77,7 @@ public abstract class Building<T extends Building> {
     public T duplicate (T instance) {
         instance.direction = direction;
         instance.map = map;
+        instance.buildings = buildings;
         return instance;
     }
 }

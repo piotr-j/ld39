@@ -20,6 +20,8 @@ public class Buildings implements InputProcessor {
     private Viewport viewport;
     private Map map;
     private GestureDetector detector;
+    private Array<Building> all;
+
     public Buildings (Viewport viewport, Map map) {
         this.viewport = viewport;
         this.map = map;
@@ -33,6 +35,7 @@ public class Buildings implements InputProcessor {
         templates.add(new UtilityPole(0, 0));
         for (Building building : templates) {
             building.map = map;
+            building.buildings = this;
         }
         detector = new GestureDetector(new GestureDetector.GestureAdapter() {
             @Override public boolean tap (float x, float y, int count, int button) {
@@ -75,6 +78,13 @@ public class Buildings implements InputProcessor {
         build.tint.a = 1;
         if (!checkLocation(build)) return false;
         buildings.add(build.duplicate());
+        if (build instanceof UtilityPole) {
+            for (Building building : buildings) {
+                if (building instanceof UtilityPole) {
+                    ((UtilityPole)building).invalidate();
+                }
+            }
+        }
         return false;
     }
 
@@ -98,12 +108,22 @@ public class Buildings implements InputProcessor {
         demolish = true;
     }
 
+    private int lastX;
+    private int lastY;
     public void update (float delta) {
         for (Building building : buildings) {
             building.update(delta);
         }
         if (build != null) {
             build.bounds.position(tmp.x, tmp.y);
+            if (build instanceof UtilityPole) {
+                UtilityPole up = (UtilityPole)build;
+                if (lastX != build.bounds.x || lastY != build.bounds.y) {
+                    up.invalidate();
+                }
+            }
+            lastX = build.bounds.x;
+            lastY = build.bounds.y;
         }
         if (Gdx.input.isKeyJustPressed(Input.Keys.Q)) {
             build.rotateCCW();
@@ -202,5 +222,9 @@ public class Buildings implements InputProcessor {
 
     @Override public boolean scrolled (int amount) {
         return false;
+    }
+
+    public Array<Building> getAll () {
+        return buildings;
     }
 }
