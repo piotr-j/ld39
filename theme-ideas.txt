@@ -2,7 +2,7 @@ ld 39 ideas
 
 running out of power
 singnal lost
-runnint out of space
+running out of space
 it spreads
 parallel worlds
 
@@ -11,7 +11,7 @@ mechanics
 time is a limited resource
 ability to slow/stop time progress
 inevitable defeat
-
+simulation slime mold?
 
 setups
 
@@ -26,3 +26,19 @@ you are a programmer and you are running out of steam before deadline. optimize 
 you are an archeologist trying to find lost artifact before it runs out of power and data in volatile memory disapears.
 
 power is running out, shields are dropping. you must fight your way to the core before times runs out.
+
+you are a slime mold that eats power, agar style stuff?
+
+heat death of the universe? you are a black hole looking for any source of energry you can find. universe expands faster then you can travel? the bigger you are the faster you can move?
+multiple scale? from mini black hole, eating atoms or whatever to galaxy sized one eating entire solar systems. you loose mass due to radiation?
+
+
+you are the dude, coal is running out and there is little space for solar or whatever,
+we want to use belts/energy simulation or something like that
+
+the goal is to researh and build enough solar to replace coal
+sadly, thats impossible!
+raising water level?
+elevation?
+
+
