@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
+import io.piotrjastrzebski.ld39.game.building.Building;
 import io.piotrjastrzebski.ld39.game.utils.IntRect;
 
 public class Map {
@@ -97,12 +98,17 @@ public class Map {
         public Color color = new Color();
         public float coal;
         public int type = TILE_TYPE_GROUND;
+        public Building building;
 
         public Tile (int x, int y, int index, float elevation) {
             this.x = x;
             this.y = y;
             this.index = index;
             this.elevation = elevation;
+        }
+
+        @Override public String toString () {
+            return "Tile{" + "x=" + x + ", y=" + y + '}';
         }
     }
 }

@@ -3,6 +3,7 @@ package io.piotrjastrzebski.ld39.game.building;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import io.piotrjastrzebski.ld39.game.Coal;
 import io.piotrjastrzebski.ld39.game.Map;
 
 public class CoalExtractor extends Building<CoalExtractor> {
@@ -28,6 +29,8 @@ public class CoalExtractor extends Building<CoalExtractor> {
     private float extractPerSecond = 5;
     private float coal;
     private float coalCap = 50;
+    private float coalSpawn = 10;
+
     public CoalExtractor (int x, int y) {
         super("Coal Extractor", x, y, 2, 2);
         tint.set(Color.DARK_GRAY);
@@ -37,32 +40,57 @@ public class CoalExtractor extends Building<CoalExtractor> {
     private boolean fieldEmpty;
     @Override public void update (float delta) {
         super.update(delta);
-        // TODO try to push coal
-        if (coal >= coalCap) return;
-        int bx = bounds.x - 2;
-        int by = bounds.y - 2;
-        float extracted = 0;
-        float extractPerTile = extractPerSecond/extractTileCount * delta;
-        for (int x = 0; x < ext_size; x++) {
-            for (int y = 0; y < ext_size; y++) {
-                int extracts = extractions[x + y * ext_size];
-                if (extracts == 1) {
-                    Map.Tile tile = map.getTile(bx + x, by + y);
-                    if (tile == null || tile.coal <= 0) continue;
-                    // we can extract nonexisting coal but who cares
-                    tile.coal -= extractPerTile;
-                    extracted += extractPerTile;
+        if (coal < coalCap) {
+            int bx = bounds.x - 2;
+            int by = bounds.y - 2;
+            float extracted = 0;
+            float extractPerTile = extractPerSecond / extractTileCount * delta;
+            for (int x = 0; x < ext_size; x++) {
+                for (int y = 0; y < ext_size; y++) {
+                    int extracts = extractions[x + y * ext_size];
+                    if (extracts == 1) {
+                        Map.Tile tile = map.getTile(bx + x, by + y);
+                        if (tile == null || tile.coal <= 0)
+                            continue;
+                        // we can extract nonexisting coal but who cares
+                        tile.coal -= extractPerTile;
+                        extracted += extractPerTile;
+                    }
                 }
             }
-        }
-        if (extracted > 0) {
-            // we dont really care if we go over cap in here
-            coal += extracted;
-            if (coal >= coalCap) {
-                Gdx.app.log("", "Reached coal cap!");
+            if (extracted > 0) {
+                // we dont really care if we go over cap in here
+                coal += extracted;
+                if (coal >= coalCap) {
+                    Gdx.app.log("", "Reached coal cap!");
+                }
+            } else {
+                fieldEmpty = true;
             }
-        } else {
-            fieldEmpty = true;
+        }
+        coalSpawn = 10;
+        if (coal >= coalSpawn) {
+            Map.Tile tile = null;
+            switch (direction) {
+            case EAST: {
+                tile = map.getTile(bounds.x + bounds.width - 1 + 1, bounds.y);
+            } break;
+            case SOUTH: {
+                tile = map.getTile(bounds.x, bounds.y -1);
+            } break;
+            case WEST: {
+                tile = map.getTile(bounds.x - 1, bounds.y);
+            } break;
+            case NORTH: {
+                tile = map.getTile(bounds.x, bounds.y + bounds.height - 1 + 1);
+            } break;
+            }
+            if (tile != null && tile.building instanceof CoalConsumer) {
+                CoalConsumer belt = (CoalConsumer)tile.building;
+                if (belt.accept(new Coal(coalSpawn))) {
+                    coal -= coalSpawn;
+                }
+            }
         }
     }
 

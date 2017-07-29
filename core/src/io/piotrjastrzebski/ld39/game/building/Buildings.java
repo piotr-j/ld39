@@ -62,6 +62,13 @@ public class Buildings implements InputProcessor {
         while (it.hasNext()) {
             Building next = it.next();
             if (next.bounds.contains(tmp)) {
+                for (int ox = 0; ox < next.bounds.width; ox++) {
+                    for (int oy = 0; oy < next.bounds.height; oy++) {
+                        Map.Tile tile = map.getTile(next.bounds.x + ox, next.bounds.y + oy);
+                        if (tile.building == null) throw new AssertionError("Tile " + tile + " not occupied "  + next);
+                        tile.building = null;
+                    }
+                }
                 it.remove();
                 break;
             }
@@ -77,7 +84,15 @@ public class Buildings implements InputProcessor {
         if (build == null) return false;
         build.tint.a = 1;
         if (!checkLocation(build)) return false;
-        buildings.add(build.duplicate());
+        Building duplicate = build.duplicate();
+        buildings.add(duplicate);
+        for (int ox = 0; ox < duplicate.bounds.width; ox++) {
+            for (int oy = 0; oy < duplicate.bounds.height; oy++) {
+                Map.Tile tile = map.getTile(duplicate.bounds.x + ox, duplicate.bounds.y + oy);
+                if (tile.building != null) throw new AssertionError("Tile " + tile + " already occupied "  + tile.building);
+                tile.building = duplicate;
+            }
+        }
         if (build instanceof UtilityPole) {
             for (Building building : buildings) {
                 if (building instanceof UtilityPole) {
