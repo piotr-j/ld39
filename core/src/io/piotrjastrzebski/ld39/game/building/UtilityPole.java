@@ -10,6 +10,6 @@ public class UtilityPole extends Building<UtilityPole> {
 
     @Override public UtilityPole duplicate () {
         UtilityPole instance = new UtilityPole(bounds.x, bounds.y);
-        return instance;
+        return super.duplicate(instance);
     }
 }

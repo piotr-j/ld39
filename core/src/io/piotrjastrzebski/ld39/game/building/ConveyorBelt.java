@@ -10,6 +10,6 @@ public class ConveyorBelt extends Building<ConveyorBelt> {
 
     @Override public ConveyorBelt duplicate () {
         ConveyorBelt instance = new ConveyorBelt(bounds.x, bounds.y);
-        return instance;
+        return super.duplicate(instance);
     }
 }

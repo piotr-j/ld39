@@ -10,6 +10,6 @@ public class CoalPowerPlant extends Building<CoalPowerPlant> {
 
     @Override public CoalPowerPlant duplicate () {
         CoalPowerPlant instance = new CoalPowerPlant(bounds.x, bounds.y);
-        return instance;
+        return super.duplicate(instance);
     }
 }

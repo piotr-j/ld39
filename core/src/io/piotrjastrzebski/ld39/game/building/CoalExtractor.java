@@ -10,6 +10,6 @@ public class CoalExtractor extends Building<CoalExtractor> {
 
     @Override public CoalExtractor duplicate () {
         CoalExtractor instance = new CoalExtractor(bounds.x, bounds.y);
-        return instance;
+        return super.duplicate(instance);
     }
 }

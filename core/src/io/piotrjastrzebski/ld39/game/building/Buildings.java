@@ -1,5 +1,6 @@
 package io.piotrjastrzebski.ld39.game.building;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.Color;
@@ -106,6 +107,11 @@ public class Buildings implements InputProcessor {
         if (build != null) {
             build.bounds.position(tmp.x, tmp.y);
         }
+        if (Gdx.input.isKeyJustPressed(Input.Keys.Q)) {
+            build.rotateCCW();
+        } else if (Gdx.input.isKeyJustPressed(Input.Keys.E)) {
+            build.rotateCW();
+        }
     }
 
     public void drawDebug (ShapeRenderer shapes) {
@@ -113,11 +119,27 @@ public class Buildings implements InputProcessor {
             building.drawDebug(shapes);
         }
         if (build != null) {
+            shapes.setColor(0, 1, 0, .7f);
+            for (Building building : buildings) {
+                if (building.bounds.overlaps(build.bounds)) {
+                    shapes.setColor(1, 0, 0, .7f);
+                    break;
+                }
+            }
+            shapes.rect(build.bounds.x -.1f, build.bounds.y -.1f, build.bounds.width + .2f, build.bounds.height + .2f);
             build.drawDebug(shapes);
         }
         if (demolish) {
-            shapes.setColor(Color.RED);
-            shapes.circle(.5f + (int)tmp.x, .5f + (int)tmp.y, .5f, 8);
+            shapes.setColor(1, 0, 0, .7f);
+            float dx = .5f + (int)tmp.x;
+            float dy = .5f + (int)tmp.y;
+            for (Building building : buildings) {
+                if (building.bounds.contains(dx, dy)) {
+                    shapes.rect(building.bounds.x -.1f, building.bounds.y -.1f, building.bounds.width + .2f, building.bounds.height + .2f);
+                    break;
+                }
+            }
+            shapes.circle(dx, dy, .3f, 12);
         }
     }
 

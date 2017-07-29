@@ -10,6 +10,6 @@ public class ResearchLab extends Building<ResearchLab> {
 
     @Override public ResearchLab duplicate () {
         ResearchLab instance = new ResearchLab(bounds.x, bounds.y);
-        return instance;
+        return super.duplicate(instance);
     }
 }

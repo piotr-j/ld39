@@ -10,6 +10,6 @@ public class SolarPowerPlant extends Building<SolarPowerPlant> {
 
     @Override public SolarPowerPlant duplicate () {
         SolarPowerPlant instance = new SolarPowerPlant(bounds.x, bounds.y);
-        return instance;
+        return super.duplicate(instance);
     }
 }
