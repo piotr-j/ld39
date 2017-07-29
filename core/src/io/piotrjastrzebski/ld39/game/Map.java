@@ -39,7 +39,6 @@ public class Map {
                 } else {
                     tile.color.set(Color.FOREST);
                 }
-
             }
         }
     }

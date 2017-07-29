@@ -22,8 +22,9 @@ public class CameraController implements InputProcessor {
         this.map = map;
         this.viewport = viewport;
         this.camera = (OrthographicCamera)viewport.getCamera();
-        bounds.set(-map.width/2f, -map.height/2f, map.width * 2, map.height * 2);
+//        bounds.set(-map.width/2f, -map.height/2f, map.width * 2, map.height * 2);
         bounds.set(0, 0, map.width, map.height);
+        camera.position.set(bounds.width/2, bounds.height/2, 0);
     }
 
     private Vector2 sp = new Vector2();
