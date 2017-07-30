@@ -43,9 +43,6 @@ project(":desktop") {
         compile project(":core")
         compile "com.badlogicgames.gdx:gdx-backend-lwjgl3:$gdxVersion"
         compile "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-desktop"
-        compile "com.badlogicgames.gdx:gdx-box2d-platform:$gdxVersion:natives-desktop"
-        compile "com.badlogicgames.gdx:gdx-controllers-desktop:$gdxVersion"
-        compile "com.badlogicgames.gdx:gdx-controllers-platform:$gdxVersion:natives-desktop"
     }
 }
 
@@ -68,10 +65,6 @@ project(":android") {
         natives "com.badlogicgames.gdx:gdx-box2d-platform:$gdxVersion:natives-arm64-v8a"
         natives "com.badlogicgames.gdx:gdx-box2d-platform:$gdxVersion:natives-x86"
         natives "com.badlogicgames.gdx:gdx-box2d-platform:$gdxVersion:natives-x86_64"
-        compile "com.badlogicgames.box2dlights:box2dlights:$box2DLightsVersion"
-        compile "com.badlogicgames.gdx:gdx-controllers:$gdxVersion"
-        compile "com.badlogicgames.gdx:gdx-controllers-android:$gdxVersion"
-        compile "com.badlogicgames.gdx:gdx-ai:$aiVersion"
     }
 }
 
@@ -85,17 +78,7 @@ project(":html") {
         compile "com.badlogicgames.gdx:gdx-backend-gwt:$gdxVersion"
         compile "com.badlogicgames.gdx:gdx:$gdxVersion:sources"
         compile "com.badlogicgames.gdx:gdx-backend-gwt:$gdxVersion:sources"
-        compile "com.badlogicgames.gdx:gdx-box2d:$gdxVersion:sources"
-        compile "com.badlogicgames.gdx:gdx-box2d-gwt:$gdxVersion:sources"
-        compile "com.badlogicgames.box2dlights:box2dlights:$box2DLightsVersion:sources"
-        compile "com.badlogicgames.gdx:gdx-controllers:$gdxVersion:sources"
-        compile "com.badlogicgames.gdx:gdx-controllers-gwt:$gdxVersion"
-        compile "com.badlogicgames.gdx:gdx-controllers-gwt:$gdxVersion:sources"
-        compile "com.badlogicgames.gdx:gdx-ai:$aiVersion:sources"
         compile "com.kotcrab.vis:vis-ui:$visUiVersion:sources"
-        compile "net.dermetfan.libgdx-utils:libgdx-utils:$libgdxUtilsVersion:sources"
-        compile "net.dermetfan.libgdx-utils:libgdx-utils-box2d:$libgdxUtilsVersion:sources"
-        compile "net.dermetfan.libgdx-utils:libgdx-utils:$libgdxUtilsVersion:sources"
     }
 }
 
@@ -106,18 +89,7 @@ project(":core") {
     dependencies {
         compile "com.badlogicgames.gdx:gdx:$gdxVersion"
         compile "com.badlogicgames.gdx:gdx-box2d:$gdxVersion"
-        compile "com.badlogicgames.box2dlights:box2dlights:$box2DLightsVersion"
-        compile "com.badlogicgames.gdx:gdx-controllers:$gdxVersion"
-        compile "com.badlogicgames.gdx:gdx-ai:$aiVersion"
         compile "com.kotcrab.vis:vis-ui:$visUiVersion"
-        compile "net.dermetfan.libgdx-utils:libgdx-utils-box2d:$libgdxUtilsVersion"
-        compile "net.dermetfan.libgdx-utils:libgdx-utils:$libgdxUtilsVersion"
-        compile "net.onedaybeard.artemis:artemis-odb:$artemisOdbVersion"
-//        compile "net.onedaybeard.artemis:artemis-odb-serializer-kryo:1.5.0-SNAPSHOT"
-
-//        compile 'com.github.piotr-j:tastyjam:-SNAPSHOT'
-        // get it from https://github.com/piotr-j/tastyjam gradle:install
-        compile "com.github.piotr-j:jam:$jamVersion"
     }
 }
 

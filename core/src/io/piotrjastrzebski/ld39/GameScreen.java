@@ -1,9 +1,6 @@
 package io.piotrjastrzebski.ld39;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
-import com.badlogic.gdx.InputMultiplexer;
-import com.badlogic.gdx.ScreenAdapter;
+import com.badlogic.gdx.*;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -13,9 +10,7 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
-import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.kotcrab.vis.ui.VisUI;
@@ -23,7 +18,6 @@ import com.kotcrab.vis.ui.widget.VisDialog;
 import com.kotcrab.vis.ui.widget.VisLabel;
 import com.kotcrab.vis.ui.widget.VisTable;
 import com.kotcrab.vis.ui.widget.VisTextButton;
-import io.piotrjastrzebski.jam.ecs.Globals;
 import io.piotrjastrzebski.ld39.game.*;
 import io.piotrjastrzebski.ld39.game.building.Building;
 import io.piotrjastrzebski.ld39.game.building.Buildings;
@@ -37,7 +31,6 @@ public class GameScreen extends ScreenAdapter {
     private final ScreenViewport guiViewport;
     private final ShapeRenderer shapes;
     private final SpriteBatch batch;
-    private Array<Entity> entities = new Array<>();
     private CameraController cameraController;
     private Table root;
     private Stage stage;
@@ -54,23 +47,16 @@ public class GameScreen extends ScreenAdapter {
 
     public GameScreen (LD39Game game) {
         batch = game.batch;
-        Globals.init(32, 1280, 720);
 
-        gameViewport = new ExtendViewport(Globals.WIDTH, Globals.HEIGHT);
+//        Gdx.app.setLogLevel(Application.LOG_DEBUG);
+
+        gameViewport = new ExtendViewport(1280 / 32f, 720/32f);
         guiViewport = new ScreenViewport();
         shapes = new ShapeRenderer();
         stage = new Stage(guiViewport, batch);
         root = new Table();
         root.setFillParent(true);
         stage.addActor(root);
-
-        entity(1, 0, 0, 5, 45, Color.CYAN);
-        entity(0,1, 1, 6, 30, Color.RED);
-        entity(2,-2, 4, 4, 15, Color.GREEN);
-        entity(0,2, 0, 3, 90, Color.BLUE);
-        entity(3,3, -2, 2, 120, Color.BLUE);
-        entity(0,5, 1, 1, 75, Color.BLUE);
-        entity(5,-4, 5, .5f, 90 + 15, Color.BLUE);
 
         map = new Map();
         buildings = new Buildings(gameViewport, map);
@@ -156,19 +142,9 @@ public class GameScreen extends ScreenAdapter {
         VisDialog dialog = new VisDialog("Building things!");
         dialog.setMovable(false);
         dialog.addCloseButton();
-        dialog.text("Left click to build, right click to cancel!\nRotate belts with Q and E");
+        dialog.text("Left click to build, right click or ESC or X to cancel!\nRotate belts with Q and E");
         dialog.button("OK");
         dialog.show(stage);
-    }
-
-    private Entity entity (int layer, float x, float y, float radius, float rotation, Color color) {
-        Entity entity = new Entity();
-        entity.layer = layer;
-        entity.setBounds(x, y, radius);
-        entity.rotation = rotation;
-        entity.color.set(color);
-        entities.add(entity);
-        return entity;
     }
 
     private boolean buildShown;

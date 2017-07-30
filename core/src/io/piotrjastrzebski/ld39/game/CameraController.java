@@ -33,6 +33,7 @@ public class CameraController implements InputProcessor {
     @Override public boolean touchDown (int screenX, int screenY, int pointer, int button) {
         viewport.unproject(tmp.set(screenX, screenY));
         if (button == MOVE_BUTTON) {
+//            Gdx.app.log("WTF?", "touch down " + tmp.x + " " + tmp.y);
             moving = true;
             sp.set(tmp);
         }
@@ -42,11 +43,17 @@ public class CameraController implements InputProcessor {
     @Override public boolean touchDragged (int screenX, int screenY, int pointer) {
         viewport.unproject(tmp.set(screenX, screenY));
         if (moving) {
-            camera.position.add(sp.x - tmp.x, sp.y- tmp.y, 0);
+            // WTF gwt?
+            if (sp.epsilonEquals(tmp, .1f)) return false;
+//            Gdx.app.log("WTF?", "tp " + tmp.x + " " + tmp.y);
+//            Gdx.app.log("WTF?", "sp " + sp.x + " " + sp.y);
+//            Gdx.app.log("WTF?", "move by " + (sp.x - tmp.x) + " " +  (sp.y - tmp.y));
+            camera.position.add(sp.x - tmp.x, sp.y - tmp.y, 0);
             if (camera.position.x < bounds.x) camera.position.x = bounds.x;
             if (camera.position.x > bounds.x + bounds.width) camera.position.x = bounds.x + bounds.width;
             if (camera.position.y < bounds.y) camera.position.y = bounds.y;
             if (camera.position.y > bounds.y + bounds.height) camera.position.y = bounds.y + bounds.height;
+            camera.update();
         }
         return false;
     }
@@ -54,6 +61,7 @@ public class CameraController implements InputProcessor {
     @Override public boolean touchUp (int screenX, int screenY, int pointer, int button) {
         viewport.unproject(tmp.set(screenX, screenY));
         if (moving && button == MOVE_BUTTON) {
+//            Gdx.app.log("WTF?", "touch up " + tmp.x + " " + tmp.y);
             moving = false;
         }
         return false;

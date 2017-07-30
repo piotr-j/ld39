@@ -7,13 +7,14 @@ import io.piotrjastrzebski.ld39.LD39Game;
 
 public class HtmlLauncher extends GwtApplication {
 
-        @Override
-        public GwtApplicationConfiguration getConfig () {
-                return new GwtApplicationConfiguration(480, 320);
-        }
+    @Override
+    public GwtApplicationConfiguration getConfig () {
+        GwtApplicationConfiguration config = new GwtApplicationConfiguration(880, 554);
+        return config;
+    }
 
-        @Override
-        public ApplicationListener createApplicationListener () {
-                return new LD39Game();
-        }
+    @Override
+    public ApplicationListener createApplicationListener () {
+            return new LD39Game();
+    }
 }

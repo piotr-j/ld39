@@ -170,6 +170,10 @@ public class Buildings implements InputProcessor {
             } else if (over != null && over.building != null) {
                 over.building.rotateCW();
             }
+        } else if (Gdx.input.isKeyJustPressed(Input.Keys.X)) {
+            if (build != null) cancelBuilding();
+        } else if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
+            if (build != null) cancelBuilding();
         }
     }
 
