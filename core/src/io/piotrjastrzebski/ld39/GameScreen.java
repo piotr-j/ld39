@@ -218,6 +218,7 @@ public class GameScreen extends ScreenAdapter {
             IntRect bounds = selected.bounds;
             shapes.rect(bounds.x - .15f, bounds.y - .15f, bounds.width + .3f, bounds.height + .3f);
         }
+        power.debugDraw(shapes);
         shapes.end();
 
         if (selected != null) {

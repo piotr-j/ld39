@@ -16,7 +16,7 @@ public class CoalPowerPlant extends Building<CoalPowerPlant> implements CoalCons
     private float genPerSecond = 20;
     private float power;
     private float powerCap = 1000;
-    private float ghgPerSecond = 0.005f;
+    private float ghgPerSecond = 0.0005f;
     public CoalPowerPlant (int x, int y) {
         super("Coal Power Plant", 500, x, y, 3, 2);
         tint.set(Color.FIREBRICK);

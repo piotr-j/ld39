@@ -39,7 +39,7 @@ public class CoalExtractor extends Building<CoalExtractor> {
     private float coal;
     private float coalCap = 50;
     private float coalSpawn = 10;
-    private float ghgPerSecond = 0.0025f;
+    private float ghgPerSecond = 0.00025f;
 
     public CoalExtractor (int x, int y) {
         super("Coal Mine", 250, x, y, 2, 2);

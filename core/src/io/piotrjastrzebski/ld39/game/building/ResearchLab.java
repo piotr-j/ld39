@@ -64,6 +64,9 @@ public class ResearchLab extends Building<ResearchLab> implements PowerConnector
     }
 
     @Override public void disconnectAll () {
+        for (PowerConnector connector : connectors) {
+            connector.disconnect(this);
+        }
         connectors.clear();
     }
 
