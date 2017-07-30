@@ -27,9 +27,9 @@ public class Research {
         steps.add(new ResearchStep(35f ));
         steps.add(new ResearchStep(40f ));
 
-        for (ResearchStep step : steps) {
-            Gdx.app.log("Step" + step.id, step.efficiency + " -> " + step.researchReq);
-        }
+//        for (ResearchStep step : steps) {
+//            Gdx.app.log("Step" + step.id, step.efficiency + " -> " + step.researchReq);
+//        }
 
     }
 
