@@ -42,8 +42,8 @@ public abstract class Building<T extends Building> {
         shapes.setColor(tint);
         shapes.rect(bounds.x + .15f, bounds.y + .15f, bounds.width - .3f, bounds.height - .3f);
         shapes.setColor(0, 0, 0, .3f);
-        float cx = bounds.x + bounds.width * .5f;
-        float cy = bounds.y + bounds.height * .5f;
+        float cx = cx();
+        float cy = cy();
         tmp.set(Math.min(bounds.width * .33f, bounds.height * .33f), 0);
         switch (direction) {
         case EAST: {
@@ -79,5 +79,9 @@ public abstract class Building<T extends Building> {
         instance.map = map;
         instance.buildings = buildings;
         return instance;
+    }
+
+    public String info() {
+        return name;
     }
 }

@@ -4,6 +4,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectSet;
+import com.badlogic.gdx.utils.StringBuilder;
 
 public class UtilityPole extends Building<UtilityPole> {
     private ObjectSet<UtilityPole> connected = new ObjectSet<>();
@@ -27,6 +28,16 @@ public class UtilityPole extends Building<UtilityPole> {
                 connected.add(up);
             }
         }
+    }
+
+    @Override public String info () {
+        StringBuilder sb = new StringBuilder(name);
+        if (connected.size > 0) {
+            sb.append("\nConnected =").append(connected.size);
+        } else {
+            sb.append("\nNot connected!");
+        }
+        return sb.toString();
     }
 
     @Override public void drawDebug (ShapeRenderer shapes) {

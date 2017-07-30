@@ -11,11 +11,13 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
+import com.kotcrab.vis.ui.widget.VisLabel;
 import com.kotcrab.vis.ui.widget.VisTextButton;
 import io.piotrjastrzebski.jam.ecs.Globals;
 import io.piotrjastrzebski.ld39.game.CameraController;
@@ -23,8 +25,7 @@ import io.piotrjastrzebski.ld39.game.Entity;
 import io.piotrjastrzebski.ld39.game.Map;
 import io.piotrjastrzebski.ld39.game.building.Building;
 import io.piotrjastrzebski.ld39.game.building.Buildings;
-
-import java.util.Comparator;
+import io.piotrjastrzebski.ld39.game.utils.IntRect;
 
 /**
  * Created by PiotrJ on 16/04/16.
@@ -38,6 +39,7 @@ public class GameScreen extends ScreenAdapter {
     private CameraController cameraController;
     private Table root;
     private Stage stage;
+    private VisLabel info;
 
     private Map map;
     private Buildings buildings;
@@ -94,6 +96,13 @@ public class GameScreen extends ScreenAdapter {
                 }
             });
         }
+        {
+            Table infoContainer = new Table();
+            infoContainer.setFillParent(true);
+            root.addActor(infoContainer);
+            info = new VisLabel();
+            infoContainer.add(info).expand().left().pad(10);
+        }
     }
 
     private Entity entity (int layer, float x, float y, float radius, float rotation, Color color) {
@@ -106,8 +115,7 @@ public class GameScreen extends ScreenAdapter {
         return entity;
     }
 
-    private Entity over;
-    private Entity selected;
+    private Building selected;
     private Vector2 tp = new Vector2();
     @Override public void render (float delta) {
         Gdx.gl.glClearColor(.25f, .25f, .25f, 1);
@@ -123,50 +131,12 @@ public class GameScreen extends ScreenAdapter {
         delta = Math.min(delta, 1f/15f);
         map.update(tp, delta);
         buildings.update(delta);
-        entities.sort(new Comparator<Entity>() {
-            @Override public int compare (Entity o1, Entity o2) {
-                return o2.layer - o1.layer;
-            }
-        });
-
-        Entity nextOver = null;
-        Entity nextSelected = selected;
-        for (Entity entity : entities) {
-            entity.update(delta);
-            if (nextOver == null) {
-                if (entity.bounds.contains(tp)) {
-                    nextOver = entity;
-                }
-            }
-            /*
-            if (nextOver != null) continue;
-            if (entity.bounds.contains(tp)) {
-                if (over != null && over != entity) {
-                    over.exit(tp);
-                }
-                nextOver = entity;
-                if (!entity.over) {
-                    entity.enter(tp);
-                }
-                entity.over(tp);
-            } else {
-                if (entity.over) {
-                    entity.exit(tp);
-                }
-            }
-            */
-        }
-        boolean m1 = Gdx.input.isButtonPressed(Input.Buttons.LEFT);
-        boolean m2 = Gdx.input.isButtonPressed(Input.Buttons.RIGHT);
-
 
 
         batch.setProjectionMatrix(gameViewport.getCamera().combined);
         batch.enableBlending();
         batch.begin();
-        for (Entity entity : entities) {
-            entity.draw(batch);
-        }
+
         batch.end();
 
         Gdx.gl.glEnable(GL20.GL_BLEND);
@@ -179,13 +149,47 @@ public class GameScreen extends ScreenAdapter {
 
         shapes.setProjectionMatrix(gameViewport.getCamera().combined);
         shapes.begin(ShapeRenderer.ShapeType.Line);
-        for (Entity entity : entities) {
-            entity.drawDebug(shapes);
+        if (selected != null) {
+            shapes.setColor(Color.YELLOW);
+            IntRect bounds = selected.bounds;
+            shapes.rect(bounds.x - .15f, bounds.y - .15f, bounds.width + .3f, bounds.height + .3f);
         }
         shapes.end();
 
+        if (selected != null) {
+            info.setText(selected.info());
+        }
+        if (Gdx.input.isButtonPressed(Input.Buttons.LEFT)) {
+            selected = null;
+            for (Building building : buildings.getAll()) {
+                if (building.bounds.contains(tp.x, tp.y)) {
+                    selected = building;
+                    break;
+                }
+            }
+        }
+
+        if (selected == null) {
+            Map.Tile tile = map.getTile((int)tp.x, (int)tp.y);
+            if (tile != null) {
+                info.setText("Elevation = " + format(tile.elevation) + "\nCoal = " + format(tile.coal));
+            }
+            for (Building building : buildings.getAll()) {
+                if (building.bounds.contains(tp.x, tp.y)) {
+                    info.setText(building.info());
+                    break;
+                }
+            }
+        }
+
         stage.act(delta);
         stage.draw();
+    }
+
+    private String format (float value) {
+        int val = (int)(value * 100);
+        int rem = val % 100;
+        return (val/100) + "." + rem;
     }
 
     @Override public void resize (int width, int height) {

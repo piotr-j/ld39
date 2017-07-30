@@ -3,6 +3,7 @@ package io.piotrjastrzebski.ld39.game.building;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.utils.StringBuilder;
 import io.piotrjastrzebski.ld39.game.Coal;
 import io.piotrjastrzebski.ld39.game.Map;
 
@@ -26,7 +27,8 @@ public class CoalExtractor extends Building<CoalExtractor> {
         }
         extractTileCount = count;
     }
-    private float extractPerSecond = 5;
+    private float fieldTotal;
+    private float coalPerSecond = 5;
     private float coal;
     private float coalCap = 50;
     private float coalSpawn = 10;
@@ -37,6 +39,7 @@ public class CoalExtractor extends Building<CoalExtractor> {
 
     }
 
+    private boolean noOutlet;
     private boolean fieldEmpty;
     @Override public void update (float delta) {
         super.update(delta);
@@ -44,7 +47,8 @@ public class CoalExtractor extends Building<CoalExtractor> {
             int bx = bounds.x - 2;
             int by = bounds.y - 2;
             float extracted = 0;
-            float extractPerTile = extractPerSecond / extractTileCount * delta;
+            float extractPerTile = coalPerSecond / extractTileCount * delta;
+            fieldTotal = 0;
             for (int x = 0; x < ext_size; x++) {
                 for (int y = 0; y < ext_size; y++) {
                     int extracts = extractions[x + y * ext_size];
@@ -55,6 +59,7 @@ public class CoalExtractor extends Building<CoalExtractor> {
                         // we can extract nonexisting coal but who cares
                         tile.coal -= extractPerTile;
                         extracted += extractPerTile;
+                        fieldTotal += tile.coal;
                     }
                 }
             }
@@ -85,10 +90,12 @@ public class CoalExtractor extends Building<CoalExtractor> {
                 tile = map.getTile(bounds.x, bounds.y + bounds.height - 1 + 1);
             } break;
             }
+            noOutlet = true;
             if (tile != null && tile.building instanceof CoalConsumer) {
                 CoalConsumer belt = (CoalConsumer)tile.building;
                 if (belt.accept(new Coal(coalSpawn))) {
                     coal -= coalSpawn;
+                    noOutlet = false;
                 }
             }
         }
@@ -114,12 +121,29 @@ public class CoalExtractor extends Building<CoalExtractor> {
         }
         super.drawDebug(shapes);
         if (fieldEmpty || coal >= coalCap) {
-            float cx = bounds.x + bounds.width/2f;
-            float cy = bounds.y + bounds.height/2f;
+            float cx = cx();
+            float cy = cy();
             shapes.setColor(Color.YELLOW);
             shapes.triangle(cx - .15f, cy + .6f, cx + .15f, cy + .6f, cx, cy - .3f);
             shapes.circle(cx, cy - .5f, .1f, 8);
         }
+    }
+
+    @Override public String info () {
+        StringBuilder sb = new StringBuilder(name);
+        sb.append("\nCoal per s = ").append(coalPerSecond);
+        if (noOutlet) {
+            sb.append("\nNo outlet!");
+        }
+        if (fieldEmpty) {
+            sb.append("\nField empty!");
+        } else {
+            sb.append("\nCoal in field = ").append(fieldTotal);
+        }
+        if (coal >= coalCap) {
+            sb.append("\nStorage full!");
+        }
+        return sb.toString();
     }
 
     @Override public CoalExtractor duplicate () {

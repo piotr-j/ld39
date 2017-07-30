@@ -8,12 +8,15 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
 import io.piotrjastrzebski.ld39.game.building.Building;
 import io.piotrjastrzebski.ld39.game.utils.IntRect;
+import io.piotrjastrzebski.ld39.game.utils.Maths;
 
 public class Map {
     private Tile[] tiles;
     public final int width;
     public final int height;
-    public final float COAL_MAX = 100;
+    public static final float COAL_MAX = 100;
+    public static final float ELEV_MIN = -5;
+    public static final float ELEV_MAX = 50;
     public IntRect bounds = new IntRect();
     public Map () {
         Pixmap terrain = new Pixmap(Gdx.files.internal("map.png"));
@@ -104,7 +107,7 @@ public class Map {
             this.x = x;
             this.y = y;
             this.index = index;
-            this.elevation = elevation;
+            this.elevation = Maths.map(elevation, 0, 1, ELEV_MIN, ELEV_MAX);
         }
 
         @Override public String toString () {

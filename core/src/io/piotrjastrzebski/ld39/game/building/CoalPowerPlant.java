@@ -4,13 +4,14 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.StringBuilder;
 import io.piotrjastrzebski.ld39.game.Coal;
 
 public class CoalPowerPlant extends Building<CoalPowerPlant> implements CoalConsumer {
     private Array<Coal> coals = new Array<>();
     private int coalCap = 10;
     private float burnrate = 1;
-    private float coal;
+    private float burningCoal;
     private float genPerSecond = 10;
     private float power;
     private float powerCap = 1000;
@@ -22,11 +23,11 @@ public class CoalPowerPlant extends Building<CoalPowerPlant> implements CoalCons
     boolean generating;
     @Override public void update (float delta) {
         super.update(delta);
-        if (coal <= 0 && coals.size > 0) {
-            coal = coals.pop().value;
+        if (burningCoal <= 0 && coals.size > 0) {
+            burningCoal = coals.pop().value;
         }
-        if (coal > 0) {
-            coal -= burnrate * delta;
+        if (burningCoal > 0) {
+            burningCoal -= burnrate * delta;
             power += genPerSecond * delta;
             if (power > powerCap) power = powerCap;
             generating = true;
@@ -35,11 +36,34 @@ public class CoalPowerPlant extends Building<CoalPowerPlant> implements CoalCons
         }
     }
 
+    @Override public String info () {
+        StringBuilder sb = new StringBuilder(name);
+        float allCoal = burningCoal;
+        for (Coal coal : coals) {
+            allCoal += coal.value;
+        }
+        sb.append("\nCoal = ").append(allCoal);
+        sb.append("\nPower = ").append(power);
+        if (!generating) {
+            sb.append("\nNo coal to burn!");
+        }
+        if (coals.size > coalCap) {
+            sb.append("\nCoal storage full!");
+        }
+        return sb.toString();
+    }
+
     @Override public void drawDebug (ShapeRenderer shapes) {
         super.drawDebug(shapes);
         if (generating) {
             shapes.setColor(0, 0, 0, .5f);
             shapes.circle(cx() + MathUtils.random(-.5f, .5f), cy() + MathUtils.random(-.5f, .5f), MathUtils.random(.2f, .8f), 12);
+        } else {
+            float cx = cx();
+            float cy = cy();
+            shapes.setColor(Color.YELLOW);
+            shapes.triangle(cx - .15f, cy + .6f, cx + .15f, cy + .6f, cx, cy - .3f);
+            shapes.circle(cx, cy - .5f, .1f, 8);
         }
     }
 
