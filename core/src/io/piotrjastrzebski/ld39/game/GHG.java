@@ -18,9 +18,9 @@ public class GHG {
     final static float LIGHT_END = 0.4f;
     final static float DARK_START = 0.2f;
     final static float DARK_END = 0.8f;
-    private static final float GHG_DECAY = -0.0025f;
+    private static final float GHG_DECAY = 0.01f;
     // 0-1
-    float ghg = .3f;
+    float ghg = 0f;
     float ghgSeaRaise = .4f;
     float ghgSeaLower = .2f;
     public GHG (ExtendViewport viewport, Map map, Buildings buildings) {
@@ -31,7 +31,7 @@ public class GHG {
     }
 
     public void update (float delta) {
-        addGHG(GHG_DECAY * delta);
+        addGHG(- ghg * GHG_DECAY * delta);
         light.a = MathUtils.clamp(LIGHT_START + (LIGHT_END - LIGHT_START) * ghg, 0, 1);
         dark.a = MathUtils.clamp(DARK_START + (DARK_END - DARK_START) * ghg, 0, 1);
         border = BORDER_START + (BORDER_END - BORDER_START) * ghg;
