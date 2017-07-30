@@ -39,7 +39,7 @@ public class CoalExtractor extends Building<CoalExtractor> {
     private float coal;
     private float coalCap = 50;
     private float coalSpawn = 10;
-    private float smogPerSecond = 0.0025f;
+    private float ghgPerSecond = 0.0025f;
 
     public CoalExtractor (int x, int y) {
         super("Coal Mine", 250, x, y, 2, 2);
@@ -77,7 +77,7 @@ public class CoalExtractor extends Building<CoalExtractor> {
                 if (coal >= coalCap) {
                     Gdx.app.log("", "Reached coal cap!");
                 }
-                buildings.GHG.addSmog(smogPerSecond * delta);
+                buildings.GHG.addGHG(ghgPerSecond * delta);
             } else {
                 fieldEmpty = true;
             }
@@ -150,9 +150,9 @@ public class CoalExtractor extends Building<CoalExtractor> {
             sb.append("\nNo outlet!");
         }
         if (fieldEmpty) {
-            sb.append("\nField empty!");
+            sb.append("\nNo coal left!");
         } else {
-            sb.append("\nCoal in field = ").append(fieldTotal);
+            sb.append("\nCoal remaining = ").append(fieldTotal);
         }
         if (coal >= coalCap) {
             sb.append("\nStorage full!");

@@ -11,12 +11,12 @@ import io.piotrjastrzebski.ld39.game.Coal;
 public class CoalPowerPlant extends Building<CoalPowerPlant> implements CoalConsumer, PowerConnector, PowerProducer {
     private Array<Coal> coals = new Array<>();
     private int coalCap = 10;
-    private float burnrate = 1;
+    private float burnrate = 10;
     private float burningCoal;
     private float genPerSecond = 20;
     private float power;
     private float powerCap = 1000;
-    private float smogPerSecond = 0.01f;
+    private float ghgPerSecond = 0.005f;
     public CoalPowerPlant (int x, int y) {
         super("Coal Power Plant", 500, x, y, 3, 2);
         tint.set(Color.FIREBRICK);
@@ -33,7 +33,7 @@ public class CoalPowerPlant extends Building<CoalPowerPlant> implements CoalCons
             power += genPerSecond * delta;
             if (power > powerCap) power = powerCap;
             generating = true;
-            buildings.GHG.addSmog(smogPerSecond * delta);
+            buildings.GHG.addGHG(ghgPerSecond * delta);
         } else {
             generating = false;
         }

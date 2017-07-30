@@ -18,6 +18,7 @@ public class GHG {
     final static float LIGHT_END = 0.4f;
     final static float DARK_START = 0.2f;
     final static float DARK_END = 0.8f;
+    private static final float GHG_DECAY = -0.009f;
     // 0-1
     float ghg = .3f;
     float ghgSeaRaise = .4f;
@@ -30,7 +31,7 @@ public class GHG {
     }
 
     public void update (float delta) {
-        addSmog(-delta * .01f);
+        addGHG(GHG_DECAY * delta);
         light.a = MathUtils.clamp(LIGHT_START + (LIGHT_END - LIGHT_START) * ghg, 0, 1);
         dark.a = MathUtils.clamp(DARK_START + (DARK_END - DARK_START) * ghg, 0, 1);
         border = BORDER_START + (BORDER_END - BORDER_START) * ghg;
@@ -44,7 +45,7 @@ public class GHG {
         }
     }
 
-    public void addSmog(float value) {
+    public void addGHG (float value) {
         ghg = MathUtils.clamp(ghg + value, 0, 1);
     }
 

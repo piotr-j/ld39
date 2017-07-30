@@ -11,7 +11,7 @@ public class Research {
     private Buildings buildings;
     private Array<ResearchStep> steps = new Array<>();
     private int currentStep = 0;
-    private float researchPerLab = 100;
+    private float researchPerLab = 50;
     public static float efficiency = 0.5f;
 
     public Research (Buildings buildings) {
@@ -46,7 +46,7 @@ public class Research {
                 step.researchRemaining -= researchPerLab * delta;
             }
             if (step.researchRemaining <= 0) {
-                if (currentStep < steps.size) {
+                if (currentStep < steps.size -1) {
                     step = steps.get(++currentStep);
                 }
             }
@@ -67,6 +67,10 @@ public class Research {
 
     public float getPanelEfficiency() {
         return steps.get(currentStep).efficiency;
+    }
+
+    public boolean lastResearched() {
+        return currentStep == steps.size-1;
     }
 
     static class ResearchStep {

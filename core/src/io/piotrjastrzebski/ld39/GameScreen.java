@@ -94,6 +94,7 @@ public class GameScreen extends ScreenAdapter {
                 build.addListener(new ClickListener(){
                     @Override public void clicked (InputEvent event, float x, float y) {
                         Gdx.app.log("build", building.name);
+                        showBuildDialog();
                         buildings.build(building);
                     }
                 });
@@ -148,6 +149,18 @@ public class GameScreen extends ScreenAdapter {
         }
     }
 
+    private void showBuildDialog () {
+        if (buildShown) return;
+        buildShown = true;
+
+        VisDialog dialog = new VisDialog("Building things!");
+        dialog.setMovable(false);
+        dialog.addCloseButton();
+        dialog.text("Left click to build, right click to cancel!\nRotate belts with Q and E");
+        dialog.button("OK");
+        dialog.show(stage);
+    }
+
     private Entity entity (int layer, float x, float y, float radius, float rotation, Color color) {
         Entity entity = new Entity();
         entity.layer = layer;
@@ -158,7 +171,10 @@ public class GameScreen extends ScreenAdapter {
         return entity;
     }
 
+    private boolean buildShown;
+    private boolean gameStartShown;
     private boolean gameOverShown;
+    private boolean gameWinShown;
     private Building selected;
     private Vector2 tp = new Vector2();
     @Override public void render (float delta) {
@@ -241,9 +257,33 @@ public class GameScreen extends ScreenAdapter {
             VisDialog dialog = new VisDialog("Game Over!");
             dialog.setMovable(false);
             dialog.addCloseButton();
-            dialog.text("Sea consumed our small island.");
-            dialog.text("With time, sea will recede.");
-            dialog.text("Is it the end?");
+            dialog.text("Sea consumed our small island.\nWith time, sea will recede.\nIs it the end?");
+            dialog.button("OK");
+            dialog.show(stage);
+        }
+        if (research.lastResearched() && !gameWinShown) {
+            gameWinShown = true;
+            VisDialog dialog = new VisDialog("You win!");
+            dialog.setMovable(false);
+            dialog.addCloseButton();
+            dialog.text("You researched all the things and won.\nCongrats!");
+            dialog.button("OK");
+            dialog.show(stage);
+        }
+        if (!gameStartShown) {
+            gameStartShown = true;
+            VisDialog dialog = new VisDialog("Power is running out!") {
+                @Override protected void result (Object object) {
+                    VisDialog dialog = new VisDialog("Move");
+                    dialog.setMovable(false);
+                    dialog.addCloseButton();
+                    dialog.text("Move the map with by holding left mouse button and dragging.\nZoom with scroll.");
+                    dialog.button("OK");
+                    dialog.show(stage);
+                }
+            };
+            dialog.setMovable(false);
+            dialog.text("We need to research high efficiency panels to survive!\nDont overdo the coal or bad things might happen...");
             dialog.button("OK");
             dialog.show(stage);
         }

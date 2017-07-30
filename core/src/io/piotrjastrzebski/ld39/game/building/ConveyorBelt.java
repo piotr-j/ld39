@@ -9,7 +9,7 @@ import io.piotrjastrzebski.ld39.game.Map;
 public class ConveyorBelt extends Building<ConveyorBelt> implements CoalConsumer{
     private Coal coal;
     private float timer;
-    private final float moveTime = 1;
+    private final float moveTime = .5f;
     public ConveyorBelt (int x, int y) {
         super("Conveyor Belt", 10, x, y, 1, 1);
         tint.set(.45f, .45f, 0, 1);

@@ -7,7 +7,7 @@ import com.badlogic.gdx.utils.ObjectSet;
 
 public class ResearchLab extends Building<ResearchLab> implements PowerConnector, PowerConsumer {
     private float powerRequiredToRun = 100;
-    private float powerRequiredToRunFrame = 100;
+    private float powerRequiredToRunFrame;
     private boolean powered;
     private float powerTimer;
     public ResearchLab (int x, int y) {
