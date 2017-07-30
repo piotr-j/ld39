@@ -10,7 +10,7 @@ public class UtilityPole extends Building<UtilityPole> implements PowerConnector
     public final float MAX_DISTANCE = 8;
 
     public UtilityPole (int x, int y) {
-        super("Utility Pole", x, y, 1, 1);
+        super("Utility Pole", 5, x, y, 1, 1);
         tint.set(Color.BROWN);
     }
 
@@ -28,8 +28,9 @@ public class UtilityPole extends Building<UtilityPole> implements PowerConnector
             if (other == this) continue;
             Building owner = ((PowerConnector)other).owner();
             if (tmp.dst(owner.cx(), owner.cy()) <= MAX_DISTANCE) {
-                connect((PowerConnector)other);
-                ((PowerConnector)other).connect(this);
+                if (((PowerConnector)other).connect(this)) {
+                    connect((PowerConnector)other);
+                }
             }
         }
     }
@@ -69,8 +70,10 @@ public class UtilityPole extends Building<UtilityPole> implements PowerConnector
     }
 
     private ObjectSet<PowerConnector> connectors = new ObjectSet<>();
-    @Override public void connect (PowerConnector other) {
+
+    @Override public boolean connect (PowerConnector other) {
         connectors.add(other);
+        return true;
     }
 
     @Override public void disconnect (PowerConnector connector) {
@@ -78,7 +81,14 @@ public class UtilityPole extends Building<UtilityPole> implements PowerConnector
     }
 
     @Override public void disconnectAll () {
+        for (PowerConnector connector : connectors) {
+            connector.disconnect(this);
+        }
         connectors.clear();
+    }
+
+    @Override public ObjectSet<PowerConnector> connected () {
+        return connectors;
     }
 
     @Override public Building owner () {

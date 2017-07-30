@@ -1,6 +1,5 @@
 package io.piotrjastrzebski.ld39.game.building;
 
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.math.MathUtils;
@@ -12,8 +11,8 @@ public class ConveyorBelt extends Building<ConveyorBelt> implements CoalConsumer
     private float timer;
     private final float moveTime = 1;
     public ConveyorBelt (int x, int y) {
-        super("Conveyor Belt", x, y, 1, 1);
-        tint.set(Color.YELLOW);
+        super("Conveyor Belt", 10, x, y, 1, 1);
+        tint.set(.45f, .45f, 0, 1);
     }
 
     @Override public void update (float delta) {
@@ -57,6 +56,29 @@ public class ConveyorBelt extends Building<ConveyorBelt> implements CoalConsumer
 
     @Override public void drawDebug (ShapeRenderer shapes) {
         super.drawDebug(shapes);
+        shapes.setColor(.9f, .9f, 0, 1);
+        float cx = cx();
+        float cy = cy();
+        float s = .3f;
+        float s2 = s/2;
+        switch (direction) {
+        case EAST: {
+            shapes.triangle(cx, cy - s2, cx, cy + s2, cx + s, cy);
+            shapes.triangle(cx - s, cy - s2, cx - s, cy + s2, cx, cy);
+        } break;
+        case SOUTH: {
+            shapes.triangle(cx, cy - s, cx + s2, cy, cx - s2, cy);
+            shapes.triangle(cx, cy, cx + s2, cy + s, cx - s2, cy + s);
+        } break;
+        case WEST: {
+            shapes.triangle(cx - s, cy, cx, cy - s2, cx, cy + s2);
+            shapes.triangle(cx, cy, cx + s, cy - s2, cx + s, cy + s2);
+        } break;
+        case NORTH: {
+            shapes.triangle(cx - s2, cy, cx + s2, cy, cx, cy + s);
+            shapes.triangle(cx - s2, cy - s, cx + s2, cy - s, cx, cy);
+        } break;
+        }
     }
 
     @Override public void drawDebug2 (ShapeRenderer shapes) {

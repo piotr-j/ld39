@@ -117,16 +117,8 @@ public class Map {
         }
         if (seaLevelChange != 0) {
             seaLevel = MathUtils.clamp(seaLevel + seaLevelChange * delta, baseSeaLevel, 1);
-//        seaLevel = .25f;
             // dont lower hill level
             hillLevel = Math.max(baseSeaLevel + seaLevel * .2f, hillLevel);
-            if (seaLevelChange > 0) {
-//                Gdx.app.log("", "Sea raising");
-            } else {
-//                Gdx.app.log("", "Sea stable");
-            }
-        } else {
-//            Gdx.app.log("", "Sea stable");
         }
         updateSeaLevel();
     }
@@ -153,6 +145,10 @@ public class Map {
 
     public float seaLevel () {
         return Maths.map(seaLevel, 0, 1, ELEV_MIN, ELEV_MAX);
+    }
+
+    public void showCoal (boolean show) {
+        coalOverlay = show;
     }
 
     public static class Tile {

@@ -32,7 +32,7 @@ public class Buildings implements InputProcessor {
         templates.add(new ConveyorBelt(0, 0));
         templates.add(new UtilityPole(0, 0));
         templates.add(new ResearchLab(0, 0));
-        templates.add(new SolarPowerPlant(0, 0));
+        templates.add(new SolarPanel(0, 0));
         for (Building building : templates) {
             building.map = map;
             building.buildings = this;
@@ -107,7 +107,7 @@ public class Buildings implements InputProcessor {
                 tile.building = duplicate;
             }
         }
-        if (build instanceof UtilityPole) {
+        if (build instanceof PowerConnector) {
             for (Building building : buildings) {
                 if (building instanceof UtilityPole) {
                     ((UtilityPole)building).invalidate();

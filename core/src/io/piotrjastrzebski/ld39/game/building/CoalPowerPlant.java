@@ -8,17 +8,17 @@ import com.badlogic.gdx.utils.ObjectSet;
 import com.badlogic.gdx.utils.StringBuilder;
 import io.piotrjastrzebski.ld39.game.Coal;
 
-public class CoalPowerPlant extends Building<CoalPowerPlant> implements CoalConsumer, PowerConnector {
+public class CoalPowerPlant extends Building<CoalPowerPlant> implements CoalConsumer, PowerConnector, PowerProducer {
     private Array<Coal> coals = new Array<>();
     private int coalCap = 10;
     private float burnrate = 1;
     private float burningCoal;
-    private float genPerSecond = 10;
+    private float genPerSecond = 20;
     private float power;
     private float powerCap = 1000;
     private float smogPerSecond = 0.01f;
     public CoalPowerPlant (int x, int y) {
-        super("Coal Power Plant", x, y, 3, 2);
+        super("Coal Power Plant", 500, x, y, 3, 2);
         tint.set(Color.FIREBRICK);
     }
 
@@ -90,8 +90,13 @@ public class CoalPowerPlant extends Building<CoalPowerPlant> implements CoalCons
     }
 
     private ObjectSet<PowerConnector> connectors = new ObjectSet<>();
-    @Override public void connect (PowerConnector other) {
-        connectors.add(other);
+
+    @Override public boolean connect (PowerConnector other) {
+        if (other instanceof UtilityPole) {
+            connectors.add(other);
+            return true;
+        }
+        return false;
     }
 
     @Override public void disconnect (PowerConnector connector) {
@@ -99,10 +104,31 @@ public class CoalPowerPlant extends Building<CoalPowerPlant> implements CoalCons
     }
 
     @Override public void disconnectAll () {
+        for (PowerConnector connector : connectors) {
+            connector.disconnect(this);
+        }
         connectors.clear();
+    }
+
+    @Override public ObjectSet<PowerConnector> connected () {
+        return connectors;
     }
 
     @Override public Building owner () {
         return this;
+    }
+
+    @Override public float storage () {
+        return power;
+    }
+
+    @Override public float consume (float totalPower) {
+        float consumed = power - totalPower;
+        power -= totalPower;
+        if (consumed < 0) {
+            power = 0;
+            return -consumed;
+        }
+        return 0;
     }
 }

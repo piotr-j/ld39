@@ -12,6 +12,7 @@ public abstract class Building<T extends Building> {
     public final int SOUTH = 1;
     public final int WEST = 2;
     public final int NORTH = 3;
+    public final float buildCost;
     public final String name;
     public IntRect bounds = new IntRect();
     public Color tint = new Color(1, 1, 1, 1);
@@ -23,8 +24,9 @@ public abstract class Building<T extends Building> {
     protected float floodedTime;
     protected float floodedDemolishTimer = 5;
 
-    public Building (String name, int x, int y, int width, int height) {
+    public Building (String name, float buildCost, int x, int y, int width, int height) {
         this.name = name;
+        this.buildCost = buildCost;
         bounds.set(x, y, width, height);
     }
 
@@ -52,25 +54,6 @@ public abstract class Building<T extends Building> {
         shapes.rect(bounds.x, bounds.y, bounds.width, bounds.height);
         shapes.setColor(tint);
         shapes.rect(bounds.x + .15f, bounds.y + .15f, bounds.width - .3f, bounds.height - .3f);
-        shapes.setColor(0, 0, 0, .3f);
-        float cx = cx();
-        float cy = cy();
-        tmp.set(Math.min(bounds.width * .33f, bounds.height * .33f), 0);
-        switch (direction) {
-        case EAST: {
-            tmp.rotate(0);
-        } break;
-        case SOUTH: {
-            tmp.rotate(-90);
-        } break;
-        case WEST: {
-            tmp.rotate(180);
-        } break;
-        case NORTH: {
-            tmp.rotate(90);
-        } break;
-        }
-        shapes.rectLine(cx, cy, cx + tmp.x, cy + tmp.y, .1f);
     }
 
     public void drawDebug2 (ShapeRenderer shapes) {

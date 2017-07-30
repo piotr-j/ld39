@@ -20,10 +20,7 @@ import com.kotcrab.vis.ui.widget.VisDialog;
 import com.kotcrab.vis.ui.widget.VisLabel;
 import com.kotcrab.vis.ui.widget.VisTextButton;
 import io.piotrjastrzebski.jam.ecs.Globals;
-import io.piotrjastrzebski.ld39.game.CameraController;
-import io.piotrjastrzebski.ld39.game.Entity;
-import io.piotrjastrzebski.ld39.game.Map;
-import io.piotrjastrzebski.ld39.game.GHG;
+import io.piotrjastrzebski.ld39.game.*;
 import io.piotrjastrzebski.ld39.game.building.Building;
 import io.piotrjastrzebski.ld39.game.building.Buildings;
 import io.piotrjastrzebski.ld39.game.utils.IntRect;
@@ -42,10 +39,14 @@ public class GameScreen extends ScreenAdapter {
     private Stage stage;
     private VisLabel hoverInfo;
     private VisLabel envInfo;
+    private VisLabel researchInfo;
+    private VisTextButton toggleCoal;
 
     private Map map;
     private Buildings buildings;
     private GHG GHG;
+    private Power power;
+    private Research research;
 
     public GameScreen (LD39Game game) {
         batch = game.batch;
@@ -70,6 +71,8 @@ public class GameScreen extends ScreenAdapter {
         map = new Map();
         buildings = new Buildings(gameViewport, map);
         GHG = new GHG(gameViewport, map, buildings);
+        power = new Power(buildings);
+        research = new Research(buildings);
 
         InputMultiplexer multiplexer = new InputMultiplexer();
         cameraController = new CameraController(map, gameViewport);
@@ -114,6 +117,26 @@ public class GameScreen extends ScreenAdapter {
             envInfo = new VisLabel();
             infoContainer.add(envInfo).expand().left().bottom().pad(10);
         }
+        {
+            Table infoContainer = new Table();
+            infoContainer.setFillParent(true);
+            root.addActor(infoContainer);
+            researchInfo = new VisLabel();
+            infoContainer.add(researchInfo).expand().left().top().pad(10);
+        }
+        {
+            Table infoContainer = new Table();
+            infoContainer.setFillParent(true);
+            root.addActor(infoContainer);
+            toggleCoal = new VisTextButton("Show coal", "toggle");
+            toggleCoal.setChecked(true);
+            toggleCoal.addListener(new ClickListener(){
+                @Override public void clicked (InputEvent event, float x, float y) {
+                    map.showCoal(toggleCoal.isChecked());
+                }
+            });
+            infoContainer.add(toggleCoal).expand().right().bottom().pad(10);
+        }
     }
 
     private Entity entity (int layer, float x, float y, float radius, float rotation, Color color) {
@@ -142,8 +165,10 @@ public class GameScreen extends ScreenAdapter {
         // cap delta so it never goes too low
         delta = Math.min(delta, 1f/15f);
         map.update(tp, delta);
+        power.update(delta);
         buildings.update(delta);
         GHG.update(delta);
+        research.update(delta);
 
 
         batch.setProjectionMatrix(gameViewport.getCamera().combined);
@@ -197,6 +222,7 @@ public class GameScreen extends ScreenAdapter {
         }
 
         envInfo.setText("Sea level = " + format(map.seaLevel()) + "\nGreenhouse gasses = " + format(GHG.ghgLevel()));
+        researchInfo.setText(research.info());
 
         stage.act(delta);
         stage.draw();
