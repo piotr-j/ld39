@@ -12,9 +12,9 @@ gwt {
     project.webAppDirName = 'webapp'
 
     compiler {
-        strict = true;
-        enableClosureCompiler = true;
-        disableCastChecking = true;
+        strict = true
+        enableClosureCompiler = false
+        disableCastChecking = true
     }
 }
 
