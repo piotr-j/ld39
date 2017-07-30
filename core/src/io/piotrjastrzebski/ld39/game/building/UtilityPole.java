@@ -6,8 +6,7 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectSet;
 import com.badlogic.gdx.utils.StringBuilder;
 
-public class UtilityPole extends Building<UtilityPole> {
-    private ObjectSet<UtilityPole> connected = new ObjectSet<>();
+public class UtilityPole extends Building<UtilityPole> implements PowerConnector {
     public final float MAX_DISTANCE = 8;
 
     public UtilityPole (int x, int y) {
@@ -16,24 +15,29 @@ public class UtilityPole extends Building<UtilityPole> {
     }
 
     public void invalidate() {
-        connected.clear();
+        for (PowerConnector connector : connectors) {
+            connector.disconnect(this);
+        }
+
+        connectors.clear();
         Array<Building> all = buildings.getAll();
         tmp.set(cx(), cy());
         for (int i = 0; i < all.size; i++) {
             Building other = all.get(i);
-            if (!(other instanceof UtilityPole)) continue;
+            if (!(other instanceof PowerConnector)) continue;
             if (other == this) continue;
-            UtilityPole up = (UtilityPole)other;
-            if (tmp.dst(up.cx(), up.cy()) <= MAX_DISTANCE) {
-                connected.add(up);
+            Building owner = ((PowerConnector)other).owner();
+            if (tmp.dst(owner.cx(), owner.cy()) <= MAX_DISTANCE) {
+                connect((PowerConnector)other);
+                ((PowerConnector)other).connect(this);
             }
         }
     }
 
     @Override public String info () {
         StringBuilder sb = new StringBuilder(name);
-        if (connected.size > 0) {
-            sb.append("\nConnected =").append(connected.size);
+        if (connectors.size > 0) {
+            sb.append("\nConnected =").append(connectors.size);
         } else {
             sb.append("\nNot connected!");
         }
@@ -45,13 +49,27 @@ public class UtilityPole extends Building<UtilityPole> {
         shapes.setColor(Color.BROWN);
         float cx = cx();
         float cy = cy();
-        for (UtilityPole pole : connected) {
-            shapes.rectLine(cx, cy, pole.cx(), pole.cy(), .05f);
+        for (PowerConnector connector : connectors) {
+            Building building = connector.owner();
+            shapes.rectLine(cx, cy, building.cx(), building.cy(), .05f);
         }
     }
 
     @Override public UtilityPole duplicate () {
         UtilityPole instance = new UtilityPole(bounds.x, bounds.y);
         return super.duplicate(instance);
+    }
+
+    private ObjectSet<PowerConnector> connectors = new ObjectSet<>();
+    @Override public void connect (PowerConnector other) {
+        connectors.add(other);
+    }
+
+    @Override public void disconnect (PowerConnector connector) {
+        connectors.remove(connector);
+    }
+
+    @Override public Building owner () {
+        return this;
     }
 }

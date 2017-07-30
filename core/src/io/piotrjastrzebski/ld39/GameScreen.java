@@ -23,6 +23,7 @@ import io.piotrjastrzebski.jam.ecs.Globals;
 import io.piotrjastrzebski.ld39.game.CameraController;
 import io.piotrjastrzebski.ld39.game.Entity;
 import io.piotrjastrzebski.ld39.game.Map;
+import io.piotrjastrzebski.ld39.game.Smog;
 import io.piotrjastrzebski.ld39.game.building.Building;
 import io.piotrjastrzebski.ld39.game.building.Buildings;
 import io.piotrjastrzebski.ld39.game.utils.IntRect;
@@ -43,6 +44,7 @@ public class GameScreen extends ScreenAdapter {
 
     private Map map;
     private Buildings buildings;
+    private Smog smog;
 
     public GameScreen (LD39Game game) {
         batch = game.batch;
@@ -66,6 +68,7 @@ public class GameScreen extends ScreenAdapter {
 
         map = new Map();
         buildings = new Buildings(gameViewport, map);
+        smog = new Smog(gameViewport, map, buildings);
 
         InputMultiplexer multiplexer = new InputMultiplexer();
         cameraController = new CameraController(map, gameViewport);
@@ -131,6 +134,7 @@ public class GameScreen extends ScreenAdapter {
         delta = Math.min(delta, 1f/15f);
         map.update(tp, delta);
         buildings.update(delta);
+        smog.update(delta);
 
 
         batch.setProjectionMatrix(gameViewport.getCamera().combined);
@@ -145,6 +149,7 @@ public class GameScreen extends ScreenAdapter {
         shapes.begin(ShapeRenderer.ShapeType.Filled);
         map.drawDebug(shapes);
         buildings.drawDebug(shapes);
+        smog.drawDebug(shapes);
         shapes.end();
 
         shapes.setProjectionMatrix(gameViewport.getCamera().combined);

@@ -10,6 +10,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import io.piotrjastrzebski.ld39.game.Map;
+import io.piotrjastrzebski.ld39.game.Smog;
 
 import java.util.Iterator;
 
@@ -21,6 +22,7 @@ public class Buildings implements InputProcessor {
     private Map map;
     private GestureDetector detector;
     private Array<Building> all;
+    Smog smog;
 
     public Buildings (Viewport viewport, Map map) {
         this.viewport = viewport;
@@ -241,5 +243,9 @@ public class Buildings implements InputProcessor {
 
     public Array<Building> getAll () {
         return buildings;
+    }
+
+    public void setSmog (Smog smog) {
+        this.smog = smog;
     }
 }

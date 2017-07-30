@@ -32,6 +32,7 @@ public class CoalExtractor extends Building<CoalExtractor> {
     private float coal;
     private float coalCap = 50;
     private float coalSpawn = 10;
+    private float smogPerSecond = 0.0025f;
 
     public CoalExtractor (int x, int y) {
         super("Coal Extractor", x, y, 2, 2);
@@ -69,6 +70,7 @@ public class CoalExtractor extends Building<CoalExtractor> {
                 if (coal >= coalCap) {
                     Gdx.app.log("", "Reached coal cap!");
                 }
+                buildings.smog.addSmog(smogPerSecond * delta);
             } else {
                 fieldEmpty = true;
             }

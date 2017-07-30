@@ -4,10 +4,11 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.ObjectSet;
 import com.badlogic.gdx.utils.StringBuilder;
 import io.piotrjastrzebski.ld39.game.Coal;
 
-public class CoalPowerPlant extends Building<CoalPowerPlant> implements CoalConsumer {
+public class CoalPowerPlant extends Building<CoalPowerPlant> implements CoalConsumer, PowerConnector {
     private Array<Coal> coals = new Array<>();
     private int coalCap = 10;
     private float burnrate = 1;
@@ -15,6 +16,7 @@ public class CoalPowerPlant extends Building<CoalPowerPlant> implements CoalCons
     private float genPerSecond = 10;
     private float power;
     private float powerCap = 1000;
+    private float smogPerSecond = 0.01f;
     public CoalPowerPlant (int x, int y) {
         super("Coal Power Plant", x, y, 3, 2);
         tint.set(Color.FIREBRICK);
@@ -31,6 +33,7 @@ public class CoalPowerPlant extends Building<CoalPowerPlant> implements CoalCons
             power += genPerSecond * delta;
             if (power > powerCap) power = powerCap;
             generating = true;
+            buildings.smog.addSmog(smogPerSecond * delta);
         } else {
             generating = false;
         }
@@ -76,5 +79,18 @@ public class CoalPowerPlant extends Building<CoalPowerPlant> implements CoalCons
     @Override public CoalPowerPlant duplicate () {
         CoalPowerPlant instance = new CoalPowerPlant(bounds.x, bounds.y);
         return super.duplicate(instance);
+    }
+
+    private ObjectSet<PowerConnector> connectors = new ObjectSet<>();
+    @Override public void connect (PowerConnector other) {
+        connectors.add(other);
+    }
+
+    @Override public void disconnect (PowerConnector connector) {
+        connectors.remove(connector);
+    }
+
+    @Override public Building owner () {
+        return this;
     }
 }
