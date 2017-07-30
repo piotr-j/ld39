@@ -44,6 +44,7 @@ public class GameScreen extends ScreenAdapter {
     private GHG GHG;
     private Power power;
     private Research research;
+    private boolean drawGui = true;
 
     public GameScreen (LD39Game game) {
         batch = game.batch;
@@ -226,8 +227,14 @@ public class GameScreen extends ScreenAdapter {
         envInfo.setText("Sea level = " + format(map.seaLevel()) + "\nGreenhouse gasses = " + format(GHG.ghgLevel()));
         researchInfo.setText(research.info());
 
+        if (Gdx.input.isKeyJustPressed(Input.Keys.SLASH)) {
+            drawGui = !drawGui;
+        }
+
         stage.act(delta);
-        stage.draw();
+        if (drawGui) {
+            stage.draw();
+        }
 
         if (map.isSeaLevelHigh() && !gameOverShown) {
             gameOverShown = true;
