@@ -18,7 +18,7 @@ public class GHG {
     final static float LIGHT_END = 0.4f;
     final static float DARK_START = 0.2f;
     final static float DARK_END = 0.8f;
-    private static final float GHG_DECAY = -0.025f;
+    private static final float GHG_DECAY = -0.0025f;
     // 0-1
     float ghg = .3f;
     float ghgSeaRaise = .4f;
