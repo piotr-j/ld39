@@ -42,7 +42,7 @@ public class CoalExtractor extends Building<CoalExtractor> {
     private float smogPerSecond = 0.0025f;
 
     public CoalExtractor (int x, int y) {
-        super("Coal Extractor", x, y, 2, 2);
+        super("Coal Mine", x, y, 2, 2);
         tint.set(Color.DARK_GRAY);
 
     }
@@ -77,7 +77,7 @@ public class CoalExtractor extends Building<CoalExtractor> {
                 if (coal >= coalCap) {
                     Gdx.app.log("", "Reached coal cap!");
                 }
-                buildings.smog.addSmog(smogPerSecond * delta);
+                buildings.GHG.addSmog(smogPerSecond * delta);
             } else {
                 fieldEmpty = true;
             }

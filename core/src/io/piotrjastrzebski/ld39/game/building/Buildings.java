@@ -3,14 +3,13 @@ package io.piotrjastrzebski.ld39.game.building;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.input.GestureDetector;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import io.piotrjastrzebski.ld39.game.Map;
-import io.piotrjastrzebski.ld39.game.Smog;
+import io.piotrjastrzebski.ld39.game.GHG;
 
 import java.util.Iterator;
 
@@ -22,7 +21,7 @@ public class Buildings implements InputProcessor {
     private Map map;
     private GestureDetector detector;
     private Array<Building> all;
-    Smog smog;
+    GHG GHG;
 
     public Buildings (Viewport viewport, Map map) {
         this.viewport = viewport;
@@ -30,11 +29,10 @@ public class Buildings implements InputProcessor {
 
         templates.add(new CoalExtractor(0, 0));
         templates.add(new CoalPowerPlant(0, 0));
-        templates.add(new ResearchLab(0, 0));
         templates.add(new ConveyorBelt(0, 0));
+        templates.add(new UtilityPole(0, 0));
         templates.add(new ResearchLab(0, 0));
         templates.add(new SolarPowerPlant(0, 0));
-        templates.add(new UtilityPole(0, 0));
         for (Building building : templates) {
             building.map = map;
             building.buildings = this;
@@ -159,10 +157,19 @@ public class Buildings implements InputProcessor {
             lastX = build.bounds.x;
             lastY = build.bounds.y;
         }
+        Map.Tile over = map.getTile((int)tmp.x, (int)tmp.y);
         if (Gdx.input.isKeyJustPressed(Input.Keys.Q)) {
-            build.rotateCCW();
+            if (build != null) {
+                build.rotateCCW();
+            } else if (over != null && over.building != null) {
+                over.building.rotateCCW();
+            }
         } else if (Gdx.input.isKeyJustPressed(Input.Keys.E)) {
-            build.rotateCW();
+            if (build != null) {
+                build.rotateCW();
+            } else if (over != null && over.building != null) {
+                over.building.rotateCW();
+            }
         }
     }
 
@@ -265,7 +272,7 @@ public class Buildings implements InputProcessor {
         return buildings;
     }
 
-    public void setSmog (Smog smog) {
-        this.smog = smog;
+    public void setGHG (GHG GHG) {
+        this.GHG = GHG;
     }
 }

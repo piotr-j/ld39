@@ -11,19 +11,19 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
+import com.kotcrab.vis.ui.widget.VisDialog;
 import com.kotcrab.vis.ui.widget.VisLabel;
 import com.kotcrab.vis.ui.widget.VisTextButton;
 import io.piotrjastrzebski.jam.ecs.Globals;
 import io.piotrjastrzebski.ld39.game.CameraController;
 import io.piotrjastrzebski.ld39.game.Entity;
 import io.piotrjastrzebski.ld39.game.Map;
-import io.piotrjastrzebski.ld39.game.Smog;
+import io.piotrjastrzebski.ld39.game.GHG;
 import io.piotrjastrzebski.ld39.game.building.Building;
 import io.piotrjastrzebski.ld39.game.building.Buildings;
 import io.piotrjastrzebski.ld39.game.utils.IntRect;
@@ -40,11 +40,12 @@ public class GameScreen extends ScreenAdapter {
     private CameraController cameraController;
     private Table root;
     private Stage stage;
-    private VisLabel info;
+    private VisLabel hoverInfo;
+    private VisLabel envInfo;
 
     private Map map;
     private Buildings buildings;
-    private Smog smog;
+    private GHG GHG;
 
     public GameScreen (LD39Game game) {
         batch = game.batch;
@@ -68,7 +69,7 @@ public class GameScreen extends ScreenAdapter {
 
         map = new Map();
         buildings = new Buildings(gameViewport, map);
-        smog = new Smog(gameViewport, map, buildings);
+        GHG = new GHG(gameViewport, map, buildings);
 
         InputMultiplexer multiplexer = new InputMultiplexer();
         cameraController = new CameraController(map, gameViewport);
@@ -103,8 +104,15 @@ public class GameScreen extends ScreenAdapter {
             Table infoContainer = new Table();
             infoContainer.setFillParent(true);
             root.addActor(infoContainer);
-            info = new VisLabel();
-            infoContainer.add(info).expand().left().pad(10);
+            hoverInfo = new VisLabel();
+            infoContainer.add(hoverInfo).expand().left().pad(10);
+        }
+        {
+            Table infoContainer = new Table();
+            infoContainer.setFillParent(true);
+            root.addActor(infoContainer);
+            envInfo = new VisLabel();
+            infoContainer.add(envInfo).expand().left().bottom().pad(10);
         }
     }
 
@@ -118,6 +126,7 @@ public class GameScreen extends ScreenAdapter {
         return entity;
     }
 
+    private boolean gameOverShown;
     private Building selected;
     private Vector2 tp = new Vector2();
     @Override public void render (float delta) {
@@ -134,7 +143,7 @@ public class GameScreen extends ScreenAdapter {
         delta = Math.min(delta, 1f/15f);
         map.update(tp, delta);
         buildings.update(delta);
-        smog.update(delta);
+        GHG.update(delta);
 
 
         batch.setProjectionMatrix(gameViewport.getCamera().combined);
@@ -149,7 +158,7 @@ public class GameScreen extends ScreenAdapter {
         shapes.begin(ShapeRenderer.ShapeType.Filled);
         map.drawDebug(shapes);
         buildings.drawDebug(shapes);
-        smog.drawDebug(shapes);
+        GHG.drawDebug(shapes);
         shapes.end();
 
         shapes.setProjectionMatrix(gameViewport.getCamera().combined);
@@ -162,7 +171,7 @@ public class GameScreen extends ScreenAdapter {
         shapes.end();
 
         if (selected != null) {
-            info.setText(selected.info());
+            hoverInfo.setText(selected.info());
         }
         if (Gdx.input.isButtonPressed(Input.Buttons.LEFT)) {
             selected = null;
@@ -177,18 +186,32 @@ public class GameScreen extends ScreenAdapter {
         if (selected == null) {
             Map.Tile tile = map.getTile((int)tp.x, (int)tp.y);
             if (tile != null) {
-                info.setText("Elevation = " + format(tile.elevation) + "\nCoal = " + format(tile.coal));
+                hoverInfo.setText("Elevation = " + format(tile.elevation) + "\nCoal = " + format(tile.coal));
             }
             for (Building building : buildings.getAll()) {
                 if (building.bounds.contains(tp.x, tp.y)) {
-                    info.setText(building.info());
+                    hoverInfo.setText(building.info());
                     break;
                 }
             }
         }
 
+        envInfo.setText("Sea level = " + format(map.seaLevel()) + "\nGreenhouse gasses = " + format(GHG.ghgLevel()));
+
         stage.act(delta);
         stage.draw();
+
+        if (map.isSeaLevelHigh() && !gameOverShown) {
+            gameOverShown = true;
+            VisDialog dialog = new VisDialog("Game Over!");
+            dialog.setMovable(false);
+            dialog.addCloseButton();
+            dialog.text("Sea consumed our small island.");
+            dialog.text("With time, sea will recede.");
+            dialog.text("Is it the end?");
+            dialog.button("OK");
+            dialog.show(stage);
+        }
     }
 
     private String format (float value) {

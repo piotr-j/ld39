@@ -1,14 +1,14 @@
 package io.piotrjastrzebski.ld39.game;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import io.piotrjastrzebski.ld39.game.building.Buildings;
+import io.piotrjastrzebski.ld39.game.utils.Maths;
 
-public class Smog {
+public class GHG {
     private final ExtendViewport viewport;
     private final Map map;
     private final Buildings buildings;
@@ -19,25 +19,25 @@ public class Smog {
     final static float DARK_START = 0.2f;
     final static float DARK_END = 0.8f;
     // 0-1
-    float smog = .3f;
-    float smogSeaRaise = .4f;
-    float smogSeaLower = .2f;
-    public Smog (ExtendViewport viewport, Map map, Buildings buildings) {
+    float ghg = .3f;
+    float ghgSeaRaise = .4f;
+    float ghgSeaLower = .2f;
+    public GHG (ExtendViewport viewport, Map map, Buildings buildings) {
         this.viewport = viewport;
         this.map = map;
         this.buildings = buildings;
-        buildings.setSmog(this);
+        buildings.setGHG(this);
     }
 
     public void update (float delta) {
         addSmog(-delta * .01f);
-        light.a = MathUtils.clamp(LIGHT_START + (LIGHT_END - LIGHT_START) * smog, 0, 1);
-        dark.a = MathUtils.clamp(DARK_START + (DARK_END - DARK_START) * smog, 0, 1);
-        border = BORDER_START + (BORDER_END - BORDER_START) * smog;
+        light.a = MathUtils.clamp(LIGHT_START + (LIGHT_END - LIGHT_START) * ghg, 0, 1);
+        dark.a = MathUtils.clamp(DARK_START + (DARK_END - DARK_START) * ghg, 0, 1);
+        border = BORDER_START + (BORDER_END - BORDER_START) * ghg;
 
-        if (smog >= smogSeaRaise) {
+        if (ghg >= ghgSeaRaise) {
             map.seaRising();
-        } else if (smog <= smogSeaLower){
+        } else if (ghg <= ghgSeaLower){
             map.seaLowering();
         } else {
             map.seaStable();
@@ -45,7 +45,7 @@ public class Smog {
     }
 
     public void addSmog(float value) {
-        smog = MathUtils.clamp(smog + value, 0, 1);
+        ghg = MathUtils.clamp(ghg + value, 0, 1);
     }
 
     private float border = 2f;
@@ -114,5 +114,9 @@ public class Smog {
         shapes.setColor(light);
         shapes.rect(
             sx + border, sy + border, camera.viewportWidth - border * 2, camera.viewportHeight - border * 2);
+    }
+
+    public float ghgLevel () {
+        return Maths.map(ghg, 0, 1, 350, 600);
     }
 }

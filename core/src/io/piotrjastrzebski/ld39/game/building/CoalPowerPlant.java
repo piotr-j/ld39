@@ -33,7 +33,7 @@ public class CoalPowerPlant extends Building<CoalPowerPlant> implements CoalCons
             power += genPerSecond * delta;
             if (power > powerCap) power = powerCap;
             generating = true;
-            buildings.smog.addSmog(smogPerSecond * delta);
+            buildings.GHG.addSmog(smogPerSecond * delta);
         } else {
             generating = false;
         }

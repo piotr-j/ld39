@@ -129,10 +129,10 @@ public class Map {
 //            Gdx.app.log("", "Sea stable");
         }
         updateSeaLevel();
+    }
 
-        if (seaLevel >= hillLevel) {
-            // TODO game lost!
-        }
+    public boolean isSeaLevelHigh() {
+        return seaLevel >= hillLevel;
     }
 
     public static int TILE_TYPE_WATER = 0;
@@ -149,6 +149,10 @@ public class Map {
 
     public void seaStable () {
         seaLevelChange = 0;
+    }
+
+    public float seaLevel () {
+        return Maths.map(seaLevel, 0, 1, ELEV_MIN, ELEV_MAX);
     }
 
     public static class Tile {
