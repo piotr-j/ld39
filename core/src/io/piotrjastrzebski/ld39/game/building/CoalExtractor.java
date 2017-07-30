@@ -17,6 +17,13 @@ public class CoalExtractor extends Building<CoalExtractor> {
         1, 1, 1, 1, 1, 1,
         0, 1, 1, 1, 1, 0
     };
+    private final static int out_size = 4;
+    private final static int[] outputs = new int[]{
+        0, 1, 1, 0,
+        1, 0, 0, 1,
+        1, 0, 0, 1,
+        0, 1, 1, 0,
+    };
     private static final int extractTileCount;
     static {
         int count = 0;
@@ -77,27 +84,25 @@ public class CoalExtractor extends Building<CoalExtractor> {
         }
         coalSpawn = 10;
         if (coal >= coalSpawn) {
-            Map.Tile tile = null;
-            switch (direction) {
-            case EAST: {
-                tile = map.getTile(bounds.x + bounds.width - 1 + 1, bounds.y);
-            } break;
-            case SOUTH: {
-                tile = map.getTile(bounds.x, bounds.y -1);
-            } break;
-            case WEST: {
-                tile = map.getTile(bounds.x - 1, bounds.y);
-            } break;
-            case NORTH: {
-                tile = map.getTile(bounds.x, bounds.y + bounds.height - 1 + 1);
-            } break;
-            }
             noOutlet = true;
-            if (tile != null && tile.building instanceof CoalConsumer) {
-                CoalConsumer belt = (CoalConsumer)tile.building;
-                if (belt.accept(new Coal(coalSpawn))) {
-                    coal -= coalSpawn;
-                    noOutlet = false;
+            int bx = bounds.x - 1;
+            int by = bounds.y - 1;
+            for (int x = 0; x < out_size; x++) {
+                for (int y = 0; y < out_size; y++) {
+                    int output = outputs[x + y * out_size];
+                    if (output == 1) {
+                        Map.Tile tile = map.getTile(bx + x, by + y);
+                        if (tile != null && tile.building instanceof CoalConsumer) {
+                            CoalConsumer belt = (CoalConsumer)tile.building;
+                            if (belt.accept(new Coal(coalSpawn))) {
+                                coal -= coalSpawn;
+                                noOutlet = false;
+                                if (coal < coalSpawn) {
+                                    return;
+                                }
+                            }
+                        }
+                    }
                 }
             }
         }
@@ -122,12 +127,19 @@ public class CoalExtractor extends Building<CoalExtractor> {
             }
         }
         super.drawDebug(shapes);
+    }
+
+    @Override public void drawDebug2 (ShapeRenderer shapes) {
+        super.drawDebug2(shapes);
         if (fieldEmpty || coal >= coalCap) {
             float cx = cx();
             float cy = cy();
             shapes.setColor(Color.YELLOW);
             shapes.triangle(cx - .15f, cy + .6f, cx + .15f, cy + .6f, cx, cy - .3f);
             shapes.circle(cx, cy - .5f, .1f, 8);
+        }
+        if (flooded) {
+            drawFlooded(shapes);
         }
     }
 

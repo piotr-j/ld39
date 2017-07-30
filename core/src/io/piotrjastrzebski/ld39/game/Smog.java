@@ -19,7 +19,9 @@ public class Smog {
     final static float DARK_START = 0.2f;
     final static float DARK_END = 0.8f;
     // 0-1
-    float smog;
+    float smog = .3f;
+    float smogSeaRaise = .4f;
+    float smogSeaLower = .2f;
     public Smog (ExtendViewport viewport, Map map, Buildings buildings) {
         this.viewport = viewport;
         this.map = map;
@@ -32,7 +34,14 @@ public class Smog {
         light.a = MathUtils.clamp(LIGHT_START + (LIGHT_END - LIGHT_START) * smog, 0, 1);
         dark.a = MathUtils.clamp(DARK_START + (DARK_END - DARK_START) * smog, 0, 1);
         border = BORDER_START + (BORDER_END - BORDER_START) * smog;
-        Gdx.app.log("Smog", "Smog = " + smog);
+
+        if (smog >= smogSeaRaise) {
+            map.seaRising();
+        } else if (smog <= smogSeaLower){
+            map.seaLowering();
+        } else {
+            map.seaStable();
+        }
     }
 
     public void addSmog(float value) {
@@ -44,11 +53,11 @@ public class Smog {
     private Color dark = new Color(0, 0, 0, .5f);
     public void drawDebug (ShapeRenderer shapes) {
         OrthographicCamera camera = (OrthographicCamera)viewport.getCamera();
-        float sx = camera.position.x - camera.viewportWidth / 2;
-        float sy = camera.position.y - camera.viewportHeight / 2;
-        float ex = camera.position.x + camera.viewportWidth / 2;
-        float ey = camera.position.y + camera.viewportHeight / 2;
-
+        float sx = camera.position.x - camera.viewportWidth / 2 * camera.zoom;
+        float sy = camera.position.y - camera.viewportHeight / 2 * camera.zoom;
+        float ex = camera.position.x + camera.viewportWidth / 2 * camera.zoom;
+        float ey = camera.position.y + camera.viewportHeight / 2 * camera.zoom;
+        float border = this.border * camera.zoom;
         // left
         shapes.triangle(
             sx, sy,

@@ -46,12 +46,20 @@ public class UtilityPole extends Building<UtilityPole> implements PowerConnector
 
     @Override public void drawDebug (ShapeRenderer shapes) {
         super.drawDebug(shapes);
+
+    }
+
+    @Override public void drawDebug2 (ShapeRenderer shapes) {
+        super.drawDebug2(shapes);
         shapes.setColor(Color.BROWN);
         float cx = cx();
         float cy = cy();
         for (PowerConnector connector : connectors) {
             Building building = connector.owner();
             shapes.rectLine(cx, cy, building.cx(), building.cy(), .05f);
+        }
+        if (flooded) {
+            drawFlooded(shapes);
         }
     }
 
@@ -67,6 +75,10 @@ public class UtilityPole extends Building<UtilityPole> implements PowerConnector
 
     @Override public void disconnect (PowerConnector connector) {
         connectors.remove(connector);
+    }
+
+    @Override public void disconnectAll () {
+        connectors.clear();
     }
 
     @Override public Building owner () {

@@ -5,4 +5,6 @@ public interface PowerConnector {
     Building owner ();
 
     void disconnect (PowerConnector connector);
+
+    void disconnectAll ();
 }

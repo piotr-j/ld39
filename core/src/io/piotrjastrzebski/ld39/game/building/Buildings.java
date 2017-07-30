@@ -82,6 +82,20 @@ public class Buildings implements InputProcessor {
         demolish = false;
     }
 
+    void demolish (Building building) {
+        if (!buildings.removeValue(building, true)) return;
+        for (int ox = 0; ox < building.bounds.width; ox++) {
+            for (int oy = 0; oy < building.bounds.height; oy++) {
+                Map.Tile tile = map.getTile(building.bounds.x + ox, building.bounds.y + oy);
+                if (tile.building == null) throw new AssertionError("Tile " + tile + " not already occupied ");
+                if (tile.building instanceof PowerConnector) {
+                    ((PowerConnector)tile.building).disconnectAll();
+                }
+                tile.building = null;
+            }
+        }
+     }
+
     private boolean finishBuilding () {
         if (build == null) return false;
         build.tint.a = 1;
@@ -106,6 +120,9 @@ public class Buildings implements InputProcessor {
     }
 
     private void cancelBuilding () {
+        if (build instanceof PowerConnector) {
+            ((PowerConnector)build).disconnectAll();
+        }
         build = null;
     }
 
@@ -160,6 +177,9 @@ public class Buildings implements InputProcessor {
             }
             shapes.rect(build.bounds.x -.1f, build.bounds.y -.1f, build.bounds.width + .2f, build.bounds.height + .2f);
             build.drawDebug(shapes);
+        }
+        for (Building building : buildings) {
+            building.drawDebug2(shapes);
         }
         if (demolish) {
             shapes.setColor(1, 0, 0, .7f);

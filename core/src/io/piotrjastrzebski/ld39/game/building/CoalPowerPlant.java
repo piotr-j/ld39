@@ -58,6 +58,11 @@ public class CoalPowerPlant extends Building<CoalPowerPlant> implements CoalCons
 
     @Override public void drawDebug (ShapeRenderer shapes) {
         super.drawDebug(shapes);
+
+    }
+
+    @Override public void drawDebug2 (ShapeRenderer shapes) {
+        super.drawDebug2(shapes);
         if (generating) {
             shapes.setColor(0, 0, 0, .5f);
             shapes.circle(cx() + MathUtils.random(-.5f, .5f), cy() + MathUtils.random(-.5f, .5f), MathUtils.random(.2f, .8f), 12);
@@ -67,6 +72,9 @@ public class CoalPowerPlant extends Building<CoalPowerPlant> implements CoalCons
             shapes.setColor(Color.YELLOW);
             shapes.triangle(cx - .15f, cy + .6f, cx + .15f, cy + .6f, cx, cy - .3f);
             shapes.circle(cx, cy - .5f, .1f, 8);
+        }
+        if (flooded) {
+            drawFlooded(shapes);
         }
     }
 
@@ -88,6 +96,10 @@ public class CoalPowerPlant extends Building<CoalPowerPlant> implements CoalCons
 
     @Override public void disconnect (PowerConnector connector) {
         connectors.remove(connector);
+    }
+
+    @Override public void disconnectAll () {
+        connectors.clear();
     }
 
     @Override public Building owner () {

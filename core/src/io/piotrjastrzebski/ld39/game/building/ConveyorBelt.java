@@ -57,32 +57,45 @@ public class ConveyorBelt extends Building<ConveyorBelt> implements CoalConsumer
 
     @Override public void drawDebug (ShapeRenderer shapes) {
         super.drawDebug(shapes);
-        if (coal == null) return;
-        shapes.setColor(.25f, .2f, .2f, 1);
-        float cx = cx();
-        float cy = cy();
-        float a = MathUtils.clamp(timer/moveTime, 0, 1);
-        float x = 0;
-        float y = 0;
-        switch (direction) {
-        case EAST: {
-            x = Interpolation.linear.apply(cx - .5f, cx + .5f, a);
-            y = cy;
-        } break;
-        case SOUTH: {
-            x = cx;
-            y = Interpolation.linear.apply(cy - .5f, cy + .5f, 1-a);
-        } break;
-        case WEST: {
-            x = Interpolation.linear.apply(cx - .5f, cx + .5f, 1-a);
-            y = cy;
-        } break;
-        case NORTH: {
-            x = cx;
-            y = Interpolation.linear.apply(cy - .5f, cy + .5f, a);
-        } break;
+    }
+
+    @Override public void drawDebug2 (ShapeRenderer shapes) {
+        super.drawDebug2(shapes);
+
+        if (coal != null) {
+            shapes.setColor(.25f, .2f, .2f, 1);
+            float cx = cx();
+            float cy = cy();
+            float a = MathUtils.clamp(timer / moveTime, 0, 1);
+            float x = 0;
+            float y = 0;
+            switch (direction) {
+            case EAST: {
+                x = Interpolation.linear.apply(cx - .5f, cx + .5f, a);
+                y = cy;
+            }
+            break;
+            case SOUTH: {
+                x = cx;
+                y = Interpolation.linear.apply(cy - .5f, cy + .5f, 1 - a);
+            }
+            break;
+            case WEST: {
+                x = Interpolation.linear.apply(cx - .5f, cx + .5f, 1 - a);
+                y = cy;
+            }
+            break;
+            case NORTH: {
+                x = cx;
+                y = Interpolation.linear.apply(cy - .5f, cy + .5f, a);
+            }
+            break;
+            }
+            shapes.circle(x, y, .3f, 6);
         }
-        shapes.circle(x, y, .3f, 6);
+        if (flooded) {
+            drawFlooded(shapes);
+        }
     }
 
     @Override public ConveyorBelt duplicate () {

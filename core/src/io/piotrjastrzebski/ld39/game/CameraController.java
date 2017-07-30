@@ -10,7 +10,7 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 
 public class CameraController implements InputProcessor {
     private final static float MIN_ZOOM = .5f;
-    private final static float MAX_ZOOM = 2f;
+    private final static float MAX_ZOOM = 3f;
     private final int MOVE_BUTTON = Input.Buttons.LEFT;
 
     private Map map;

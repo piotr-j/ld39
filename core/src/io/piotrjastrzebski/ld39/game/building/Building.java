@@ -2,6 +2,7 @@ package io.piotrjastrzebski.ld39.game.building;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import io.piotrjastrzebski.ld39.game.Map;
 import io.piotrjastrzebski.ld39.game.utils.IntRect;
@@ -18,6 +19,9 @@ public abstract class Building<T extends Building> {
     protected Map map;
     protected Buildings buildings;
     protected static Vector2 tmp = new Vector2();
+    protected boolean flooded = false;
+    protected float floodedTime;
+    protected float floodedDemolishTimer = 5;
 
     public Building (String name, int x, int y, int width, int height) {
         this.name = name;
@@ -25,7 +29,14 @@ public abstract class Building<T extends Building> {
     }
 
     public void update (float delta) {
-
+        if (flooded) {
+            floodedTime += delta;
+        } else if (floodedTime > 0){
+            floodedTime -= delta * .25f;
+        }
+        if (floodedTime >= floodedDemolishTimer) {
+            buildings.demolish(this);
+        }
     }
 
     public float cx () {
@@ -62,6 +73,15 @@ public abstract class Building<T extends Building> {
         shapes.rectLine(cx, cy, cx + tmp.x, cy + tmp.y, .1f);
     }
 
+    public void drawDebug2 (ShapeRenderer shapes) {
+
+    }
+
+    void drawFlooded(ShapeRenderer shapes) {
+        shapes.setColor(MathUtils.random(.7f, 1f), MathUtils.random(.3f, 7f), 0, .5f);
+        shapes.circle(cx() + MathUtils.random(-.5f, .5f), cy() + MathUtils.random(-.5f, .5f), MathUtils.random(.2f, .8f), 12);
+    }
+
     public abstract T duplicate();
 
     public void rotateCCW () {
@@ -83,5 +103,9 @@ public abstract class Building<T extends Building> {
 
     public String info() {
         return name;
+    }
+
+    public void flooded (boolean flooded) {
+        this.flooded = flooded;
     }
 }
