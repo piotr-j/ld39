@@ -113,7 +113,7 @@ public class GHG {
         // center
         shapes.setColor(light);
         shapes.rect(
-            sx + border, sy + border, camera.viewportWidth - border * 2, camera.viewportHeight - border * 2);
+            sx + border, sy + border, camera.viewportWidth * camera.zoom - border * 2, camera.viewportHeight * camera.zoom - border * 2);
     }
 
     public float ghgLevel () {
