@@ -13,11 +13,15 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
+import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
+import com.kotcrab.vis.ui.VisUI;
 import com.kotcrab.vis.ui.widget.VisDialog;
 import com.kotcrab.vis.ui.widget.VisLabel;
+import com.kotcrab.vis.ui.widget.VisTable;
 import com.kotcrab.vis.ui.widget.VisTextButton;
 import io.piotrjastrzebski.jam.ecs.Globals;
 import io.piotrjastrzebski.ld39.game.*;
@@ -103,29 +107,34 @@ public class GameScreen extends ScreenAdapter {
                 }
             });
         }
+        SpriteDrawable drawable = new SpriteDrawable((SpriteDrawable)VisUI.getSkin().getDrawable("dialogDim"));
+        drawable.getSprite().setColor(0, 0, 0, .5f);
         {
-            Table infoContainer = new Table();
+            VisTable infoContainer = new VisTable(true);
             infoContainer.setFillParent(true);
             root.addActor(infoContainer);
             hoverInfo = new VisLabel();
+            hoverInfo.getStyle().background = drawable;
             infoContainer.add(hoverInfo).expand().left().pad(10);
         }
         {
-            Table infoContainer = new Table();
+            VisTable infoContainer = new VisTable(true);
             infoContainer.setFillParent(true);
             root.addActor(infoContainer);
             envInfo = new VisLabel();
-            infoContainer.add(envInfo).expand().left().bottom().pad(10);
+            envInfo.getStyle().background = drawable;
+            infoContainer.add(envInfo).expand().left().bottom().pad(10).padBottom(60);
         }
         {
-            Table infoContainer = new Table();
+            VisTable infoContainer = new VisTable(true);
             infoContainer.setFillParent(true);
             root.addActor(infoContainer);
             researchInfo = new VisLabel();
+            researchInfo.getStyle().background = drawable;
             infoContainer.add(researchInfo).expand().left().top().pad(10);
         }
         {
-            Table infoContainer = new Table();
+            VisTable infoContainer = new VisTable(true);
             infoContainer.setFillParent(true);
             root.addActor(infoContainer);
             toggleCoal = new VisTextButton("Show coal", "toggle");
@@ -135,7 +144,7 @@ public class GameScreen extends ScreenAdapter {
                     map.showCoal(toggleCoal.isChecked());
                 }
             });
-            infoContainer.add(toggleCoal).expand().right().bottom().pad(10);
+            infoContainer.add(toggleCoal).expand().right().bottom().pad(10).padBottom(60);
         }
     }
 

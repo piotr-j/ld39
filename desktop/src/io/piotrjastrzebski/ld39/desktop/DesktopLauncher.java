@@ -8,7 +8,8 @@ public class DesktopLauncher {
 	public static void main (String[] arg) {
 		Lwjgl3ApplicationConfiguration config = new Lwjgl3ApplicationConfiguration();
 		config.setTitle("ld39 - ???");
-		config.setWindowedMode(1280, 720);
+		// web size
+		config.setWindowedMode(880, 554);
 		new Lwjgl3Application(new LD39Game(), config);
 	}
 }
